@@ -1,8 +1,9 @@
 <template>
     <v-bottom-navigation
-      :value="value"
+      :value="value" app
       color="orange"
       grow
+      dark
     >
       <v-btn>
         <span>Recents</span>
@@ -25,7 +26,7 @@
   </template>
 
 <script>
-export default {
-  data: () => ({ value: 1 }),
-}
+  export default {
+    data: () => ({ value: 1 }),
+  }
 </script>
