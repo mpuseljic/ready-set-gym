@@ -6,21 +6,26 @@
       dark
     >
       <v-btn>
-        <span>Recents</span>
+        <span>Home</span>
   
-        <v-icon>mdi-history</v-icon>
+        <v-icon>mdi-home</v-icon>
       </v-btn>
   
       <v-btn>
-        <span>Favorites</span>
+        <span>BMI</span>
   
-        <v-icon>mdi-heart</v-icon>
+        <v-icon>mdi-chart-box</v-icon>
       </v-btn>
   
       <v-btn>
-        <span>Nearby</span>
+        <span>Diary</span>
   
-        <v-icon>mdi-map-marker</v-icon>
+        <v-icon>mdi-application-edit-outline</v-icon>
+      </v-btn>
+      <v-btn>
+        <span>Profile</span>
+  
+        <v-icon>mdi-account</v-icon>
       </v-btn>
     </v-bottom-navigation>
   </template>

@@ -5,22 +5,16 @@
       color="black"
       dark
     >
-      <div class="d-flex align-center">
-
-
-      </div>
-
       <v-btn
         href="/"
         text
       >
       <v-img
           alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
+          class="shrink"
           contain
-          min-width="100"
           src="@/assets/logorsg.jpg"
-          width="250"
+          max-width="250"
         />
       </v-btn>
     </v-app-bar>
@@ -37,11 +31,12 @@
 
 import Navbar from './components/Navbar.vue'
 
+
 export default {
   name: 'App',
 
   components: {
-    Navbar
+    Navbar,
   },
   data: () => ({
     //
