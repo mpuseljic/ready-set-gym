@@ -1,7 +1,7 @@
 <template>
     <v-bottom-navigation
       :value="value" app
-      color="orange"
+      color="#D29433"
       grow
       dark
     >
