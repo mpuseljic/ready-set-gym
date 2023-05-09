@@ -1,7 +1,6 @@
 <template>
   <div :style="myStyle" id="wrapper">
-    <v-btn id="btn" color="#D29433" width="300px">Get started</v-btn>
-    <v-btn id="btn" width="300px">Login</v-btn>
+
   </div>
 </template>
 <script>
