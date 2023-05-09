@@ -20,9 +20,7 @@ export default {
 }
 </script>
 <style>
-h1 {
-  color:brown;
-}
+
 #wrapper {
   padding-bottom: 100px;
   display: flex;
