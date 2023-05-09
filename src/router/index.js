@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Login from '../views/Login.vue'
+import Landing from '../views/Landing.vue'
 import HomeView from '../views/HomeView.vue'
 import Diary from '../views/Diary.vue'
 import Profile from '../views/Profile.vue'
+import Login from '../views/Login.vue'
 
 Vue.use(VueRouter)
 
@@ -23,8 +24,8 @@ const routes = [
   },
   {
     path: '/',
-    name: 'login',
-    component: Login
+    name: 'landing',
+    component: Landing
   },
   {
     path: '/diary',
@@ -35,6 +36,11 @@ const routes = [
     path: '/profile',
     name: 'profile',
     component: Profile
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login
   },
 ]
 
