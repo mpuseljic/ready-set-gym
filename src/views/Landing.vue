@@ -6,7 +6,7 @@
     <p id="text">
       Become stronger with our workout plans
     </p>
-    <v-btn id="btn" color="#D29433" width="300px">Get started</v-btn>
+    <v-btn id="btn" color="#D29433" width="300px" to="/signup">Get started</v-btn>
     <v-btn id="btn" width="300px" to="/login">Login</v-btn>
 
   </div>
