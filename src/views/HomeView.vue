@@ -17,9 +17,61 @@
     small-chips
 ></v-autocomplete>
 
+  <v-carousel v-model="model">
+    <v-carousel-item>
+    <v-card
+    class="mx-auto"
+    max-width="344"
+    dark
+  >
+    <v-img
+      src="@/assets/upperbody.jpg"
+      height="200px"
+    ></v-img>
+
+    <v-card-title class="naslov">
+      Upper Body Attack 
+    </v-card-title>
+
+    <v-card-subtitle>
+      READY SET <span class="go">GO</span>
+    </v-card-subtitle>
+
+    <v-card-actions>
+      <v-btn
+        text
+        color="#D29433"
+      >
+        START WORKOUT
+      </v-btn>
+
+      <v-spacer></v-spacer>
+
+    </v-card-actions>
+  </v-card>
+
+    
+
+    </v-carousel-item>
+  </v-carousel>
+
+
 </div>
 
+
 </template>
+
+<script>
+  export default {
+    data: () => ({
+      show: false,
+      model: 0,
+      colors: [
+        'black'
+      ],
+    }),
+  }
+</script>
 
 <style>
 
