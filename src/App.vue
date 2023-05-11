@@ -6,7 +6,7 @@
       dark
     >
       <v-btn
-        href="/home"
+        href="/"
         text
       >
       <v-img
