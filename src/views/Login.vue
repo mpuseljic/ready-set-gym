@@ -20,12 +20,14 @@
         <v-btn 
         color="green"
         :style="btnstyleGreen"
+        to="/home"
         >
             Login
         </v-btn>
         <v-btn 
         color="gray"
         :style="btnstyleGray"
+        to="/"
         >
             Cancel
         </v-btn>

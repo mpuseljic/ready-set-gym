@@ -1,5 +1,5 @@
 <template>
-    <div class="main" :style="{'background-color':'black', 'height':'100%'}">
+    <div class="main" :style="{'background-color':'black', 'height':'100%', 'margin':'0'}">
     <div class="header" :style="{'padding-left':'15px'}">
         <v-btn color="black" :style="{'width':'30px'}">
             <v-icon
@@ -10,10 +10,16 @@
             </v-icon>
         </v-btn>
       </div>
+      <div class="gender">
+        <v-btn @click="maleChoose" :color="maleBtn" :style="BtnStyle">
+          <v-icon size="50" >mdi-gender-male</v-icon>
+        </v-btn>
+        <v-btn @click="femaleChoose" :color="femaleBtn" :style="BtnStyle">
+          <v-icon size="50">mdi-gender-female</v-icon>
+        </v-btn>
+    </div>
   <div class="bmi">
-    <v-container>
-    <v-row>
-      <v-col cols="6">
+    <div class="input">
         <v-text-field
           color="white"
           class="height"
@@ -21,8 +27,8 @@
           label="Height (cm)"
           type="number"
         ></v-text-field>
-      </v-col>
-      <v-col cols="6">
+
+
         <v-text-field
           class="weight"
           color="white"
@@ -30,21 +36,16 @@
           label="Weight (kg)"
           type="number"
         ></v-text-field>
-      </v-col>
-    </v-row>
+      </div>
 
-    <v-row>
-      <v-col>
+
+
         <v-btn class="btn" color="green" @click="calculateBMI">Calculate</v-btn>
-      </v-col>
-    </v-row>
 
-    <v-row v-if="bmi !== null">
-      <v-col>
+
+      <div v-if="bmi != null">
         <h2 class="result">Your BMI: {{ bmi }}</h2>
-      </v-col>
-    </v-row>
-  </v-container>
+      </div>
   </div>
 </div>
 </template>
@@ -57,6 +58,17 @@ export default {
       height: null,
       weight: null,
       bmi: null,
+      male: false,
+      female: false,
+      femaleBtn: 'gray',
+      maleBtn: 'gray',
+      BtnStyle: {
+        height: '100px',
+        width: '100px',
+        margin: '10px 43px 10px 43px',
+        borderRadius: '20px',
+        backgroundColor: '#D29433'
+      }
     };
   },
   methods: {
@@ -68,21 +80,54 @@ export default {
         this.bmi = null;
       }
     },
+    maleChoose(){
+      if (this.male == false){
+        this.male = true
+        this.maleBtn = 'cyan'
+      }
+      else {
+        this.male = false
+        this.maleBtn = 'gray'
+      }
+    },
+    femaleChoose() {
+      if (this.female == false){
+        this.female = true
+        this.femaleBtn = 'pink'
+      }
+      else {
+        this.female = false
+        this.femaleBtn = 'gray'
+      }
+    },
   },
 };
 </script>
 
 <style>
-
+.gender {
+  text-align: center;
+}
 .bmi{
   margin: auto;
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.input {
+  margin: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 .height{
   background-color: #D29433;
-    width: 300px;
-    min-width: 100px;
+    /* width: 150px; */
+    max-width: 300px;
     padding: 20px;
     border-radius: 20px;
     text-align: center;
@@ -93,8 +138,8 @@ export default {
 
 .weight{
   background-color: #D29433;
-    width: 300px;
-    min-width: 100px;
+    /* width: 150px; */
+    max-width: 300px;
     padding: 20px;
     border-radius: 20px;
     text-align: center;
@@ -112,5 +157,6 @@ export default {
 .btn{
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   padding: 10px;
+  margin: 20px;
 }
 </style>
