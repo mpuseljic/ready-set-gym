@@ -6,6 +6,7 @@
       elevation="0"
       color="black"
       :style="{'padding-top':'15px'}"
+      to="/"
       >
         <v-icon 
         color="red"
