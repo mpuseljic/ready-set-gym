@@ -1,34 +1,27 @@
 <template>
-  <div :style="myStyle" id="wrapper">
+<div class="main" :style="{'background-color':'black', 'height':'100%'}">
+    <div class="header" :style="{'padding-left':'15px'}">
+    </div>
+    <div class="header">
+      <h1 :style="{'color':'#D29433'}">Let's crush it!</h1>
+    </div>
+    <v-autocomplete
+    :style="{ backgroundColor: 'gray' }"
+    auto-select-first
+    chips
+    clearable
+    deletable-chips
+    dense
+    multiple
+    rounded
+    small-chips
+></v-autocomplete>
 
-  </div>
+</div>
+
 </template>
-<script>
-export default {
-  name: 'Home',
-  data(){
-    return{
-      myStyle:{
-        backgroundImage: `url(${require('@/assets/login.jpg')})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        height: '88vh',
-      }
-    }
-  },
-}
-</script>
+
 <style>
 
-#wrapper {
-  padding-bottom: 100px;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
-  align-items: center;
-}
-#btn {
-  margin: 8px;
-}
+
 </style>
