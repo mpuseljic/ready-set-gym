@@ -6,7 +6,7 @@
       <h1 :style="{'color':'#D29433'}">Let's crush it!</h1>
     </div>
     <v-autocomplete
-    :style="{ backgroundColor: 'gray' }"
+    :style="{ backgroundColor: 'gray', width: '95.5%', margin: 'auto' }"
     auto-select-first
     chips
     clearable
@@ -248,8 +248,9 @@
 
       <v-btn icon 
         :style="{width: '35px', margin: 'auto'}"
+        @click="addedToFav"
       >
-      <v-icon>mdi-heart</v-icon>
+      <v-icon :color="srce" size="30">mdi-heart</v-icon>
       </v-btn>
     </v-card-actions>
 
@@ -276,12 +277,27 @@
     data: () => ({
       show: false,
       model: 0,
+      added: false,
       colors: [
         'black'
       ],
       cards: [
-        { title: 'Pre-fab homes', src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg', },]
+        { title: 'Pre-fab homes', src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg', },],
+      srce: 'gray'
     }),
+    methods: {
+      addedToFav() {
+        if (this.added === false){
+          this.added = true
+          this.srce = 'red'
+        }
+        else {
+          this.added = false
+          this.srce = 'gray'
+        }
+
+      }
+    }
   }
 </script>
 
