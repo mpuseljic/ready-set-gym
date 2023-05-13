@@ -6,7 +6,7 @@
       <h1 :style="{'color':'#D29433'}">Let's crush it!</h1>
     </div>
     <v-autocomplete
-    :style="{ backgroundColor: 'gray' }"
+    :style="{ backgroundColor: 'gray', width: '95.5%', margin: 'auto' }"
     auto-select-first
     chips
     clearable
@@ -15,6 +15,7 @@
     multiple
     rounded
     small-chips
+    :items="items"
 ></v-autocomplete>
 
   <v-carousel v-model="model">
@@ -69,6 +70,7 @@
       colors: [
         'black'
       ],
+      items: ['Bench', 'Home']
     }),
   }
 </script>
