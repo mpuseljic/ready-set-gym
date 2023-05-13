@@ -23,6 +23,7 @@
       <h1 class="name">Mirna Luka</h1>
     </div>
     <div class="header">
+      
       <h1 :style="{'color':'#D29433'}">My workouts</h1>
       </div>
             <div class="cards">
