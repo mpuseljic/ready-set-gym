@@ -26,100 +26,11 @@
       
       <h1 :style="{'color':'#D29433'}">My workouts</h1>
       </div>
-            <div class="cards">
-              <v-card
-    class="mx-auto"
-    max-width="344"
-    dark
-  >
-    <v-img
-      src="@/assets/upperbody.jpg"
-      height="200px"
-    ></v-img>
+      <div>
+        <ProfileCard v-for="(card, index) in cards" :key="index" :card="card"/>
 
-    <v-card-title class="naslov">
-      Upper Body Attack 
-    </v-card-title>
-
-    <v-card-subtitle>
-      READY SET <span class="go">GO</span>
-    </v-card-subtitle>
-
-    <v-card-actions>
-      <v-btn
-        text
-        color="#D29433"
-      >
-        START WORKOUT
-      </v-btn>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        icon
-        @click="show = !show"
-      >
-        <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-      </v-btn>
-    </v-card-actions>
-
-    <v-expand-transition>
-      <div v-show="show">
-        <v-divider></v-divider>
-
-        <v-card-text class="show">
-          Time to get the arms, shoulders and chest into it! You will need some dumbbells to get this one done.
-        </v-card-text>
-      </div>
-    </v-expand-transition>
-  </v-card>
-  <v-card
-    class="mx-auto"
-    max-width="344"
-    dark
-  >
-    <v-img
-      src="@/assets/lowerbody.jpg"
-      height="200px"
-    ></v-img>
-
-    <v-card-title class="naslov">
-      Lower Body Attack 
-    </v-card-title>
-
-    <v-card-subtitle>
-      READY SET <span class="go">GO</span>
-    </v-card-subtitle>
-
-    <v-card-actions>
-      <v-btn
-        text
-        color="#D29433"
-      >
-        START WORKOUT
-      </v-btn>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        icon
-        @click="show = !show"
-      >
-        <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-      </v-btn>
-    </v-card-actions>
-
-    <v-expand-transition>
-      <div v-show="show">
-        <v-divider></v-divider>
-
-        <v-card-text class="show">
-          Use these timeless leg exercises to gain mass and strength on your lower body. A varied combination of reps and sets will help to keep your routine fresh.
-        </v-card-text>
-      </div>
-    </v-expand-transition>
-  </v-card>
   </div>
+
   <div class="header">
       <h1 :style="{'color':'#D29433'}">My calendar</h1>
       </div>
@@ -194,8 +105,16 @@
   </template>
 
 <script>
+import ProfileCard from '@/components/ProfileCard.vue';
+
+
   export default {
+    name: 'profile',
+    components:{
+      ProfileCard,
+    },
     data: () => ({
+      cards: [],
       show: false,
       type: 'month',
       types: ['month', 'week', 'day', '4day'],
@@ -247,6 +166,12 @@
         return Math.floor((b - a + 1) * Math.random()) + a
       },
     },
+    created(){
+      this.cards = [
+      {url: require('@/assets/lowerbody.jpg'), subtitle: 'Lower Body Attack', text: 'Use these timeless leg exercises to gain mass and strength on your lower body. A varied combination of reps and sets will help to keep your routine fresh.'},
+      {url: require('@/assets/upperbody.jpg'), subtitle: 'Upper Body Attack', text: 'Build a strong upper body with these effective exercises. Focus on form and gradually increase weights to maximize results.'},
+      ]
+    }
   }
 </script>
 
@@ -278,22 +203,6 @@
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
-.cards{
-  padding-bottom: 100px;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
-  align-items: center;
-}
-.mx-auto {
-  margin: 20px;
-  font-weight: bold;
-}
-
-.go{
-  color: #D29433;
-  
-}
 
 .d-flex{
   margin:auto;
