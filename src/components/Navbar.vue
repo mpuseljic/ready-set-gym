@@ -32,6 +32,7 @@
 
 <script>
   export default {
+    name:'Navbar',
     data: () => ({ value: 1 }),
   }
 </script>

@@ -47,12 +47,18 @@
         <h2 class="result">Your BMI: {{ bmi }}</h2>
       </div>
   </div>
+
 </div>
 </template>
 
 <script>
+
+
 export default {
   name: 'BMICalculator',
+  components:{
+  
+  },
   data() {
     return {
       height: null,

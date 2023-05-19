@@ -57,7 +57,7 @@
     </div>
 
     <ExerciseList v-for="(ecard, index) in filteredCards" :key="index" :ecard="ecard"/>
-
+    
 </div>
 
 
@@ -74,6 +74,7 @@ import store from "@/store";
     components:{
         ProfileCard,
         ExerciseList,
+        
       },
     data: () => ({
       model: 0,
@@ -126,16 +127,16 @@ import store from "@/store";
     computed: {
       filteredCards(){
         let searchTerm = this.store.searchTerm;
-        //let newCards = this.exercisecards.filter(ecard => ecard.title.includes(searchTerm));
-        let newCards = [];
+        return this.exercisecards.filter(ecard => ecard.title.includes(searchTerm));
+        // let newCards = [];
 
-        for(let ecard of this.exercisecards){
-          if(ecard.title.indexOf(searchTerm) >= 0){
-            newCards.push(ecard)
-          }
-        }
+        // for(let ecard of this.exercisecards){
+        //   if(ecard.title.indexOf(searchTerm) >= 0){
+        //     newCards.push(ecard)
+        //   }
+        // }
   
-        return newCards;
+        // return newCards;
       }
 
     },

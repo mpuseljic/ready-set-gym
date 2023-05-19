@@ -14,7 +14,4 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-let db = firebase.firestore();
-let storage = firebase.storage();
-
-export { firebase, db, storage };
+export  { firebase };

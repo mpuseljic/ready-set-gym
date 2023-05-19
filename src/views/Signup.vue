@@ -13,19 +13,33 @@
     <h2 :style="{'color':'white','text-align':'center'}">Create your account</h2>
     <div class="input-signup">
         <h3 :style="{'color':'white'}">First name</h3>
-        <input type="first-name" class="input-field">
+        <input 
+        type="first-name" 
+        v-model="name"
+        class="input-field">
         <h3 :style="{'color':'white'}">Last name</h3>
-        <input type="last-name" class="input-field">
+        <input 
+        type="last-name" 
+        v-model="surname"
+        class="input-field">
         <h3 :style="{'color':'white'}">E-mail</h3>
-        <input type="email" class="input-field">
+        <input 
+        type="email" 
+        v-model="username"
+        class="input-field">
         <h3 :style="{'color':'white'}">Password</h3>
-        <input type="password" class="input-field">
+        <input 
+        type="password" 
+        v-model="password"
+        class="input-field">
 
         <div class="submit">
         <v-btn 
+        type="button"
+        @click="signup"
         color="green"
         :style="btnstyleGreen"
-        to="/home"
+        :disabled="isDisabled"
         >
             Create account
         </v-btn>
@@ -35,17 +49,46 @@
 </template>
 
 <script>
+import { firebase } from "@/firebase"
+
 export default {
   name: 'Signup',
-  data(){
+  data(){ //funkcija
     return{
       btnstyleGreen:{
         borderRadius: '20px',
         width: '300px',
         marginTop: '10px'
-      }
+      },
+      name:"",
+      surname:"",
+      username:"",
+      password:""
+
     }
   },
+  methods: { //objekt
+    signup(){
+
+        if(this.password.length < 6){
+            alert("Passsword nust be at least 6 characters long!");
+            return;
+        }
+        firebase.auth().createUserWithEmailAndPassword(this.username, this.password)
+        .then(() => {
+                console.log("Uspješna registracija");
+                this.$router.replace({name:"home"});
+            }).catch(function(error){
+                console.error("Došlo je do greške", error);
+            })
+        console.log("Nastavak");
+    }
+  },
+  computed: {
+    isDisabled(){
+        return !(this.name && this.surname && this.username && this.password);
+    }
+  }
 
 }
 
@@ -74,4 +117,5 @@ export default {
     align-items: center;
     margin-top: 30px;
 }
+
 </style>

@@ -44,11 +44,17 @@
       </v-btn>
 
     </v-container>
+
   </div>
 </template>
 
 <script>
+
+
 export default {
+  components:{
+   
+  },
   data() {
     return {
       date: new Date().toISOString().substr(0, 10),

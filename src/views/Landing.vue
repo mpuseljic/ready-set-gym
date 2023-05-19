@@ -21,7 +21,7 @@ export default {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
-        height: '88vh',
+        height: '100vh',
       }
     }
   },
