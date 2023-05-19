@@ -1,7 +1,7 @@
 <template>
     <div class="main" :style="{'background-color':'black', 'height':'100%'}">
     <div class="header" :style="{'padding-left':'15px'}">
-        <v-btn color="black" :style="{'width':'30px'}">
+        <v-btn to="/" color="black" :style="{'width':'30px' }">
             <v-icon
             x-large
             color="white"
@@ -70,8 +70,6 @@ export default {
       firebase.auth().signInWithEmailAndPassword(this.username, this.password)
       .then((result) => {
         console.log("Uspješna prijava", result)
-
-        this.$router.replace({name:"home"});
         
       }).catch(function(e){
         console.error("Greška", e)
