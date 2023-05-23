@@ -40,7 +40,9 @@
         </v-card-subtitle>
 
         <v-card-actions>
-          <v-btn text color="#D29433">START WORKOUT</v-btn>
+          
+            <v-btn color="#D29433" >START WORKOUT</v-btn>
+         
           <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
@@ -50,13 +52,13 @@
   <div class="header">
       <h1 :style="{'color': 'white'}">MY WORKOUT PLAN</h1>
     </div>
-    <ProfileCard v-for="(card, index) in workoutcards" :key="index" :card="card"/>
+    <ProfileCard v-for="(card, index) in workoutcards" :key="index" :card="card" />
 
     <div class="header">
       <h1 :style="{'color':'white'}">EXERCISE LIST</h1>
     </div>
 
-    <ExerciseList v-for="(ecard, index) in filteredCards" :key="index" :ecard="ecard"/>
+    <ExerciseList v-for="(ecard, index) in filteredCards" :key="index" :ecard="ecard" @addExerciseToWorkoutCard="addExerciseToWorkoutCard"/>
     
 </div>
 
@@ -64,7 +66,7 @@
 </template>
 
 <script>
-
+import router from '@/router';
 import ProfileCard from '@/components/ProfileCard.vue';
 import ExerciseList from '@/components/ExerciseList.vue';
 import store from "@/store";
@@ -97,14 +99,14 @@ import store from "@/store";
     }),
     created(){
       this.workoutcards = [
-      {url: require('@/assets/lowerbody.jpg'), subtitle: 'Lower Body Attack', text: 'Use these timeless leg exercises to gain mass and strength on your lower body. A varied combination of reps and sets will help to keep your routine fresh.'},
-      {url: require('@/assets/upperbody.jpg'), subtitle: 'Upper Body Attack', text: 'Build a strong upper body with these effective exercises. Focus on form and gradually increase weights to maximize results.'},
+      {url: require('@/assets/lowerbody.jpg'), subtitle: 'Lower Body Attack', text: 'Use these timeless leg exercises to gain mass and strength on your lower body. A varied combination of reps and sets will help to keep your routine fresh.', exercises: []},
+      {url: require('@/assets/upperbody.jpg'), subtitle: 'Upper Body Attack', text: 'Build a strong upper body with these effective exercises. Focus on form and gradually increase weights to maximize results.', exercises:[]},
       ],
       this.exercisecards = [
-        {url: require('@/assets/dumbellinclinepress.gif'), title: 'DUMBBELL INCLINE PRESS'},
+        {url: require('@/assets/dumbellinclinepress.gif'), title: 'DUMBBELL INCLINE PRESS', workoutCard: 'Upper Body Attack'},
         {url: require('@/assets/benchdips.webp'), title: 'BENCH DIPS'},
         {url: require('@/assets/seateddumbbell.gif'), title: 'SEATED DUMBBELL REVERSE FLY'},
-        {url: require('@/assets/latpulldown.gif'), title: 'LAT PULLDOWN'},
+        {url: require('@/assets/latpulldown.gif'), title: 'LAT PULLDOWN', workoutCard: 'Upper Body Attack'},
         {url: require('@/assets/bicepcurl.gif'), title: 'BICEPS CURL'},
         {url: require('@/assets/lateralraise.gif'), title: 'FRONT TO LATERAL RAISE'},
         {url: require('@/assets/pullups.gif'), title: 'PULL UPS'},
@@ -137,11 +139,26 @@ import store from "@/store";
         // }
   
         // return newCards;
-      }
+      }},
+      methods: {
+        addExerciseToWorkoutCard(exercise){
+          console.log("ADDING EXERCISE: ", exercise.title)
+          const workoutCard = this.workoutcards.find(card => card.subtitle === exercise.workoutCard);
+          if(workoutCard){
+            workoutCard.exercises.push(exercise);
+            console.log("Exercise added to workout card: ", workoutCard.subtitle);
+            console.log("Workout Card: ", workoutCard)
+          }
+        },
 
-    },
-    
+      }
   }
+
+
+
+  
+  
+    
 </script>
 
 <style>

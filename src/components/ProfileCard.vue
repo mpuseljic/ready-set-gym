@@ -24,6 +24,7 @@
     <v-btn
       text
       color="#D29433"
+      
     >
       START WORKOUT 
     </v-btn>
@@ -52,12 +53,16 @@
 </template>
 
 <script>
+
+
 export default {
     name: 'ProfileCard',
     props: ['card'],
     data: () => ({
         show: false
-    })
+    }),
+
+
 }
 
 </script>

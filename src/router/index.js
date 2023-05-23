@@ -10,6 +10,7 @@ import store from '@/store'
 
 
 
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -64,6 +65,8 @@ const routes = [
     name: 'signup',
     component: Signup
   },
+
+
 
 ]
 

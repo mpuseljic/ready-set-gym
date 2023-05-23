@@ -28,6 +28,8 @@
 </template>
 
 <script>
+
+
 import store from '@/store'
 import Navbar from '@/components/Navbar.vue'
 import {firebase} from '@/firebase';

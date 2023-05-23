@@ -41,14 +41,19 @@ export default {
     }),
     methods: {
       addedToFav() {
-        if (this.added === false){
+        console.log("Favorite button clicked");
+        console.log("Exercise: ", this.ecard.title)
+        if (!this.added){
           this.added = true
           this.srce = 'red'
-        }
-        else {
+
+
+          this.$emit('addExerciseToWorkoutCard', this.ecard);
+        } else {
           this.added = false
           this.srce = 'gray'
         }
+        
 
       }
     },
