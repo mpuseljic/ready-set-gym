@@ -1,5 +1,5 @@
 export default {
     searchTerm: '',
-    currentUser:null
-    
+    currentUser: null
+
 }

@@ -15,7 +15,7 @@
         <h3 :style="{'color':'white'}">First name</h3>
         <input 
         type="first-name" 
-        v-model="name"
+        v-model="userName"
         class="input-field">
         <h3 :style="{'color':'white'}">Last name</h3>
         <input 
@@ -25,7 +25,7 @@
         <h3 :style="{'color':'white'}">E-mail</h3>
         <input 
         type="email" 
-        v-model="username"
+        v-model="email"
         class="input-field">
         <h3 :style="{'color':'white'}">Password</h3>
         <input 
@@ -36,7 +36,7 @@
         <div class="submit">
         <v-btn 
         type="button"
-        @click="signup"
+        @click="signUp"
         color="green"
         :style="btnstyleGreen"
         :disabled="isDisabled"
@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { firebase } from "@/firebase"
+import { firebase, db } from "@/firebase"
 
 export default {
   name: 'Signup',
@@ -60,38 +60,62 @@ export default {
         width: '300px',
         marginTop: '10px'
       },
-      name:"",
+      userName:"",
       surname:"",
-      username:"",
+      email:"",
       password:""
 
     }
   },
-  methods: { //objekt
-    signup(){
 
-        if(this.password.length < 6){
-            alert("Passsword nust be at least 6 characters long!");
-            return;
-        }
-        firebase.auth().createUserWithEmailAndPassword(this.username, this.password)
-        .then(() => {
-                console.log("Uspješna registracija");
-                this.$router.replace({name:"home"});
-            }).catch(function(error){
-                console.error("Došlo je do greške", error);
+  methods: {
+  signUp(email, password, name, surname) {
+    email = this.email
+    password = this.password
+    name = this.userName
+    surname = this.surname
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+
+        if (user) {
+          // User created successfully
+          const userDocRef = db.collection('users').doc(user.uid);
+
+          // Add user details to the "users" collection
+          userDocRef
+            .set({
+              ime: name,
+              prezime: surname,
+              email: email,
             })
-        console.log("Nastavak");
-    }
+            .then(() => {
+              console.log('User added to collection successfully');
+            })
+
+            .catch((error) => {
+              console.error('Error adding user to collection:', error);
+            });
+        } else {
+          console.error('User object is undefined');
+        }
+      })
+      .catch((error) => {
+        console.error('Sign-up error:', error);
+      });
+      this.password = ""
   },
-  computed: {
+},
+
+
+computed: {
     isDisabled(){
-        return !(this.name && this.surname && this.username && this.password);
+        return !(this.userName && this.surname && this.email && this.password);
     }
-  }
-
 }
-
+}
 </script>
 <style>
 .input-signup {
