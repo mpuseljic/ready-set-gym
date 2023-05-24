@@ -40,9 +40,14 @@
         color="green"
         :style="btnstyleGreen"
         :disabled="isDisabled"
+        :loading="loading"
         >
             Create account
         </v-btn>
+        </div>
+        <div>
+          <span class="passError" v-if="passError">Lozinka mora imati 6 znakova!</span>
+          <span class="passError" v-if="emailError">E-mail nije ispravan!</span>
         </div>
     </div>
     </div>    
@@ -63,17 +68,23 @@ export default {
       userName:"",
       surname:"",
       email:"",
-      password:""
+      password:"",
+      loading: false,
+      passError: false,
+      emailError: false
 
     }
   },
 
   methods: {
   signUp(email, password, name, surname) {
+    this.emailError = false
+    this.passError = false
     email = this.email
     password = this.password
     name = this.userName
     surname = this.surname
+    this.loading = true
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
@@ -103,9 +114,20 @@ export default {
         }
       })
       .catch((error) => {
-        console.error('Sign-up error:', error);
+        if (error.code === 'auth/invalid-email') {
+          console.error('Invalid email:', error.message);
+          this.emailError = true
+          this.loading = false
+          this.email = ""
+        } else if (error.code === 'auth/weak-password') {
+          console.error('Weak password:', error.message);
+          this.passError = true
+          this.loading = false
+          this.password = ""
+        } else {
+          console.error('Sign-up error:', error);
+        }
       });
-      this.password = ""
   },
 },
 
@@ -141,5 +163,7 @@ computed: {
     align-items: center;
     margin-top: 30px;
 }
-
+.passError {
+  color: red;
+}
 </style>
