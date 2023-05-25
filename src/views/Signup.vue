@@ -1,7 +1,7 @@
 <template>
     <div class="main" :style="{'background-color':'black', 'height':'100%'}">
     <div class="header" :style="{'padding-left':'15px'}">
-        <v-btn color="black" :style="{'width':'30px'}">
+        <v-btn to="/" color="black" :style="{'width':'30px'}">
             <v-icon
             x-large
             color="white"
@@ -48,6 +48,7 @@
         <div>
           <span class="passError" v-if="passError">Lozinka mora imati 6 znakova!</span>
           <span class="passError" v-if="emailError">E-mail nije ispravan!</span>
+          <span class="passError" v-if="emailExists">Račun sa E-mail adresom već postoji!</span>
         </div>
     </div>
     </div>    
@@ -71,7 +72,8 @@ export default {
       password:"",
       loading: false,
       passError: false,
-      emailError: false
+      emailError: false,
+      emailExists: false
 
     }
   },
@@ -124,7 +126,12 @@ export default {
           this.passError = true
           this.loading = false
           this.password = ""
-        } else {
+        } else if (error.code === 'auth/email-already-in-use'){
+          this.emailExists = true
+          this.loading = false
+          this.email = ""
+        }
+        else {
           console.error('Sign-up error:', error);
         }
       });

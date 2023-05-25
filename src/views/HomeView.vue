@@ -70,9 +70,34 @@
     </v-card-actions>
   </v-card>
 </v-dialog>
-    </div>
-    <ProfileCard v-for="(card, index) in workoutcards" :key="index" :card="card" />
 
+<v-dialog v-model="addWorkoutDialog" max-width="700px">
+  <v-card color="grey">
+    <v-card-title>Add exercises to your workout</v-card-title>
+    <v-card-text>
+      <v-container fluid >
+    <v-row>
+      <v-col
+        v-for="exercise in exercises"
+        :key="exercise.id"
+        cols="4"
+      >
+        <v-checkbox
+          v-model="selected"
+          :label="exercise.id"
+          :value="exercise.id"
+        ></v-checkbox>
+      </v-col>
+    </v-row>
+  </v-container>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn color="#D29433" @click="saveWorkouts">Save</v-btn>
+      <v-btn color="secondary" @click="closeDialog">Cancel</v-btn>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
+    </div>
     <div class="header">
       <h1 :style="{'color':'white'}">EXERCISE LIST</h1>
     </div>
@@ -99,6 +124,9 @@ import {firebase, db, storage} from '@/firebase'
         
       },
     data: () => ({
+      selected: [], // Stores the selected document ids
+      exercises: [], // Stores the exercises documents
+      addWorkoutDialog: false,
       dialogVisible: false,
       selectedFile: null,
       workoutName: '',
@@ -180,9 +208,12 @@ import {firebase, db, storage} from '@/firebase'
       this.dialogVisible = false;
       this.resetFields();
     },
+    closeExerciseDialog() {
+      this.addWorkoutDialog = false
+      this.resetFields()
+    },
     resetFields() {
       this.selectedFile = null;
-      this.workoutName = '';
     },
     saveWorkout() {
       // Handle saving the workout logic here
@@ -210,7 +241,7 @@ import {firebase, db, storage} from '@/firebase'
             this.workoutName,
           ).set({
             name: this.workoutName,
-            imageUr: downloadURL
+            imageUrl: downloadURL
           })
         })
         .then(() => {
@@ -220,6 +251,41 @@ import {firebase, db, storage} from '@/firebase'
         .catch(error => {
           console.error('Error saving workout:', error);
         });
+        this.addWorkoutDialog = true
+        this.fetchExercises()
+    },
+    fetchExercises() {
+      // Assuming you have initialized Firebase SDK for Firestore
+      db.collection("exercises")
+        .get()
+        .then((querySnapshot) => {
+          const exercises = [];
+          querySnapshot.forEach((doc) => {
+            exercises.push({ id: doc.id });
+          });
+          this.exercises = exercises;
+        })
+        .catch((error) => {
+          console.error("Error fetching exercises:", error);
+        });
+    },
+    saveWorkouts() {
+      // Assuming you have initialized Firebase SDK for Firestore
+      const db = firebase.firestore();
+      const userId = firebase.auth().currentUser.uid;
+      const workoutsRef = db.collection("users").doc(userId).collection("myworkouts").doc(this.workoutName);
+
+      workoutsRef
+        .set({ exercises: this.selected })
+        .then(() => {
+          console.log("Workouts saved successfully!");
+          this.closeExerciseDialog()
+        })
+        .catch((error) => {
+          console.error("Error saving workouts:", error);
+        });
+        this.workoutName = ''
+        
     }
   }
 };
