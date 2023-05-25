@@ -101,8 +101,30 @@
     <div class="header">
       <h1 :style="{'color':'white'}">EXERCISE LIST</h1>
     </div>
+    <div>
+    <div class="exerciselist" v-for="card in filteredCards" :key="card.title">
+      <v-card
+    class="mx-auto"
+    max-width="344"
+    dark
+  >
+    <v-img
+      :src="card.url"
+      :alt="card.title"
+      height="200px"
+    ></v-img>
 
-    <ExerciseList v-for="(ecard, index) in filteredCards" :key="index" :ecard="ecard" @addExerciseToWorkoutCard="addExerciseToWorkoutCard"/>
+    <v-card-title class="naslov-vjezbe">
+      {{ card.title }} 
+    </v-card-title>
+
+
+
+  </v-card>
+    </div>
+  </div>
+
+   
     
 </div>
 
@@ -112,7 +134,6 @@
 <script>
 import router from '@/router';
 import ProfileCard from '@/components/ProfileCard.vue';
-import ExerciseList from '@/components/ExerciseList.vue';
 import store from "@/store";
 import {firebase, db, storage} from '@/firebase'
 
@@ -120,8 +141,7 @@ import {firebase, db, storage} from '@/firebase'
   export default {
     components:{
         ProfileCard,
-        ExerciseList,
-        
+       
       },
     data: () => ({
       selected: [], // Stores the selected document ids
@@ -152,44 +172,67 @@ import {firebase, db, storage} from '@/firebase'
       this.workoutcards = [
       {url: require('@/assets/lowerbody.jpg'), subtitle: 'Lower Body Attack', text: 'Use these timeless leg exercises to gain mass and strength on your lower body. A varied combination of reps and sets will help to keep your routine fresh.', exercises: []},
       {url: require('@/assets/upperbody.jpg'), subtitle: 'Upper Body Attack', text: 'Build a strong upper body with these effective exercises. Focus on form and gradually increase weights to maximize results.', exercises:[]},
-      ],
-      this.exercisecards = [
-        {url: require('@/assets/dumbellinclinepress.gif'), title: 'DUMBBELL INCLINE PRESS'},
-        {url: require('@/assets/benchdips.webp'), title: 'BENCH DIPS'},
-        {url: require('@/assets/seateddumbbell.gif'), title: 'SEATED DUMBBELL REVERSE FLY'},
-        {url: require('@/assets/latpulldown.gif'), title: 'LAT PULLDOWN'},
-        {url: require('@/assets/bicepcurl.gif'), title: 'BICEPS CURL'},
-        {url: require('@/assets/lateralraise.gif'), title: 'FRONT TO LATERAL RAISE'},
-        {url: require('@/assets/pullups.gif'), title: 'PULL UPS'},
-        {url: require('@/assets/bulgarian.gif'), title: 'BULGARIAN SPLIT SQUAT'},
-        {url: require('@/assets/deadlift.gif'), title: 'DEADLIFT'},
-        {url: require('@/assets/hipthrust.gif'), title: 'HIP THRUST'},
-        {url: require('@/assets/stepups.gif'), title: 'WEIGHTED STEP UPS'},
-        {url: require('@/assets/jammerpress.gif'), title: 'BARBELL JAMMER PRESS'},
-        {url: require('@/assets/goodmorning.gif'), title: 'GOOD MORNING'},
-        {url: require('@/assets/cheststretch.webp'), title: 'CHEST STRETCH'},
-        {url: require('@/assets/cobra.gif'), title: 'COBRA'},
-        {url: require('@/assets/neckstretch.gif'), title: 'NECK STRETCH'},
-        {url: require('@/assets/calfstretch.gif'), title: 'CALF STRETCH'},
-        {url: require('@/assets/hamstringstretch.gif'), title: 'HAMSTRING STRETCH'},
-        {url: require('@/assets/sidelunge.gif'), title: 'SIDE LUNGE STRETCH'},
-        {url: require('@/assets/hipflexor.gif'), title: 'HIP FLEXOR STRETCH'},
-        {url: require('@/assets/butterfly.gif'), title: 'BUTTERFLY STRETCH'},
       ]
+      // this.exercisecards = [
+      //   {url: require('@/assets/dumbellinclinepress.gif'), title: 'DUMBBELL INCLINE PRESS'},
+      //   {url: require('@/assets/benchdips.webp'), title: 'BENCH DIPS'},
+      //   {url: require('@/assets/seateddumbbell.gif'), title: 'SEATED DUMBBELL REVERSE FLY'},
+      //   {url: require('@/assets/latpulldown.gif'), title: 'LAT PULLDOWN'},
+      //   {url: require('@/assets/bicepcurl.gif'), title: 'BICEPS CURL'},
+      //   {url: require('@/assets/lateralraise.gif'), title: 'FRONT TO LATERAL RAISE'},
+      //   {url: require('@/assets/pullups.gif'), title: 'PULL UPS'},
+      //   {url: require('@/assets/bulgarian.gif'), title: 'BULGARIAN SPLIT SQUAT'},
+      //   {url: require('@/assets/deadlift.gif'), title: 'DEADLIFT'},
+      //   {url: require('@/assets/hipthrust.gif'), title: 'HIP THRUST'},
+      //   {url: require('@/assets/stepups.gif'), title: 'WEIGHTED STEP UPS'},
+      //   {url: require('@/assets/jammerpress.gif'), title: 'BARBELL JAMMER PRESS'},
+      //   {url: require('@/assets/goodmorning.gif'), title: 'GOOD MORNING'},
+      //   {url: require('@/assets/cheststretch.webp'), title: 'CHEST STRETCH'},
+      //   {url: require('@/assets/cobra.gif'), title: 'COBRA'},
+      //   {url: require('@/assets/neckstretch.gif'), title: 'NECK STRETCH'},
+      //   {url: require('@/assets/calfstretch.gif'), title: 'CALF STRETCH'},
+      //   {url: require('@/assets/hamstringstretch.gif'), title: 'HAMSTRING STRETCH'},
+      //   {url: require('@/assets/sidelunge.gif'), title: 'SIDE LUNGE STRETCH'},
+      //   {url: require('@/assets/hipflexor.gif'), title: 'HIP FLEXOR STRETCH'},
+      //   {url: require('@/assets/butterfly.gif'), title: 'BUTTERFLY STRETCH'},
+      // ]
+      const db = firebase.firestore()
+
+      db.collection('exercises').get()
+    .then((querySnapshot) => {
+      const exercisecards = [];
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const exercisecard = {
+          url: data.imageUrl,
+          title: doc.id, // Use the document id as the workout name
+        };
+
+        exercisecards.push(exercisecard);
+      });
+
+      this.exercisecards = exercisecards;
+    })
+    .catch((error) => {
+      console.error('Error getting exercise collection:', error);
+    });
+      
     },
+  
     computed: {
       filteredCards(){
         let searchTerm = this.store.searchTerm;
-        return this.exercisecards.filter(ecard => ecard.title.includes(searchTerm));
-        // let newCards = [];
+        return this.exercisecards.filter(card => card.title.includes(searchTerm));
+      //   let newCards = [];
 
-        // for(let ecard of this.exercisecards){
-        //   if(ecard.title.indexOf(searchTerm) >= 0){
-        //     newCards.push(ecard)
-        //   }
-        // }
+      // for(let card of this.exercisecards){
+      //   if(card.title.indexOf(searchTerm) >= 0){
+      //     newCards.push(card)
+      //   }
+      // }
   
-        // return newCards;
+    //  return newCards;
       }},
       methods: {
         addExerciseToWorkoutCard(exercise){
@@ -276,7 +319,7 @@ import {firebase, db, storage} from '@/firebase'
       const workoutsRef = db.collection("users").doc(userId).collection("myworkouts").doc(this.workoutName);
 
       workoutsRef
-        .set({ exercises: this.selected })
+        .update({ exercises: this.selected })
         .then(() => {
           console.log("Workouts saved successfully!");
           this.closeExerciseDialog()
@@ -311,5 +354,10 @@ margin: 50px;
 
 }
 
+.naslov-vjezbe{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 </style>
