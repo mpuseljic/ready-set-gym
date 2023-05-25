@@ -13,11 +13,9 @@
     <v-row justify="center">
       <v-date-picker
         color="#D29433"
-        v-model="date"
+        v-model="selectedDate"
         class="mt-4"
-        min="2020-06-15"
-        max="2024-03-20"
-      ></v-date-picker>
+        ></v-date-picker>
     </v-row>
     <v-container class="text-center">
       <v-textarea
@@ -49,7 +47,7 @@
 </template>
 
 <script>
-
+import { firebase } from '@/firebase'
 
 export default {
   components:{
@@ -57,7 +55,7 @@ export default {
   },
   data() {
     return {
-      date: new Date().toISOString().substr(0, 10),
+      selectedDate: null,
       content: ''
     };
   },
@@ -66,7 +64,28 @@ export default {
       this.content = '';
     },
     saveContent(){
-      this.content='';
+      const db = firebase.firestore();
+      const userId = firebase.auth().currentUser.uid;
+      const diaryRef = db.collection("users").doc(userId).collection("mydiary").doc(this.selectedDate);
+
+      diaryRef
+        .set({ 
+          text: this.content
+        })
+        .then(() => {
+          console.log("Diary saved successfully!");
+          this.content = ''
+          this.selectedDate = null
+        })
+        .catch((error) => {
+          console.error("Error saving workouts:", error);
+        });
+    },
+
+  },
+  watch: {
+    selectedDate(newDate) {
+      console.log("Selected date:", newDate);
     }
   }
 };
