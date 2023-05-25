@@ -154,10 +154,10 @@ import {firebase, db, storage} from '@/firebase'
       {url: require('@/assets/upperbody.jpg'), subtitle: 'Upper Body Attack', text: 'Build a strong upper body with these effective exercises. Focus on form and gradually increase weights to maximize results.', exercises:[]},
       ],
       this.exercisecards = [
-        {url: require('@/assets/dumbellinclinepress.gif'), title: 'DUMBBELL INCLINE PRESS', workoutCard: 'Upper Body Attack'},
+        {url: require('@/assets/dumbellinclinepress.gif'), title: 'DUMBBELL INCLINE PRESS'},
         {url: require('@/assets/benchdips.webp'), title: 'BENCH DIPS'},
         {url: require('@/assets/seateddumbbell.gif'), title: 'SEATED DUMBBELL REVERSE FLY'},
-        {url: require('@/assets/latpulldown.gif'), title: 'LAT PULLDOWN', workoutCard: 'Upper Body Attack'},
+        {url: require('@/assets/latpulldown.gif'), title: 'LAT PULLDOWN'},
         {url: require('@/assets/bicepcurl.gif'), title: 'BICEPS CURL'},
         {url: require('@/assets/lateralraise.gif'), title: 'FRONT TO LATERAL RAISE'},
         {url: require('@/assets/pullups.gif'), title: 'PULL UPS'},

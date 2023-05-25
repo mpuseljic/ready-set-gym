@@ -33,14 +33,6 @@
   </div>
 
 
-<input type="text"
-placeholder="Unesi ime"
-v-model="workoutName"
->
-<v-btn
-@click="createWorkout"
->+</v-btn>
-
   </div>
   </template>
 
