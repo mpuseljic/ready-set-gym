@@ -101,6 +101,7 @@
     </div>
     <div>
         <v-carousel v-model="model1">
+          
     <v-carousel-item v-for="(item, index) in myworkouts" :key="index">
       <v-card class="mx-auto" max-width="344" dark>
         <v-img :src="item.imageUrl" height="200px"></v-img>
@@ -112,19 +113,46 @@
         <v-card-subtitle>
           READY SET <span class="go">GO</span>
         </v-card-subtitle>
-
+       
         <v-card-actions>
           
-            <v-btn color="#D29433" >START WORKOUT</v-btn>
+          <v-btn @click="startWorkoutDialog(item.id)">Start Workout</v-btn>
+          
             <v-btn color="red" @click="deleteWorkout(item.id)">DELETE</v-btn>
          
           <v-spacer></v-spacer>
+        
         </v-card-actions>
+      
       </v-card>
+   
     </v-carousel-item>
+ 
   </v-carousel>
 
   </div>
+  <v-dialog v-model="exerciseDialog" max-width="700px">
+  <v-card color="grey">
+    <v-card-title></v-card-title>
+    <v-card-text>
+      <v-container fluid>
+
+
+            <v-card v-for="(item, index) in myworkoutexercises" :key="index" dark>
+              <v-img :src="item.imageUrl" height="200px"></v-img>
+              <v-card-title>{{ item.name }}</v-card-title>
+              <v-card-subtitle> {{ item.exercises }}</v-card-subtitle>
+            </v-card>
+
+      </v-container>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn color="secondary" @click="closeMyExerciseDialog">Close</v-btn>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
+
+
     <div class="header">
       <h1 :style="{'color':'white'}">EXERCISE LIST</h1>
     </div>
@@ -190,7 +218,10 @@ import {firebase, db, storage} from '@/firebase'
       ],
       
       store: store,
-      myworkouts: []
+      myworkouts: [],
+      exerciseDialog: false,
+      myworkoutexercises: []
+  
 
     }),
     created(){
@@ -241,6 +272,40 @@ import {firebase, db, storage} from '@/firebase'
       }
     },
       methods: {
+        startWorkoutDialog(documentId) {
+      // Retrieve the exercises for the selected workout from Firebase
+      const userId = firebase.auth().currentUser.uid;
+      const db = firebase.firestore();
+      const workoutsRef = db.collection('users').doc(userId).collection('myworkouts');
+      const workoutDoc = workoutsRef.doc(documentId)
+
+      workoutDoc // Replace 'selectedWorkout' with the actual ID/name of the workout
+        .get()
+        .then((doc) => {
+          const fbdata = []
+          if (doc.exists) {
+            const data = doc.data();
+            const { imageUrl, name, exercises } = data; // Destructure the attributes from the document data
+            console.log('ImageUrl:', imageUrl);
+            console.log('Name:', name);
+            console.log('Exercises:', exercises);
+            fbdata.push({ id: data.id,
+            name: data.name,
+            imageUrl: data.imageUrl,
+            exercises: data.exercises
+            })
+            this.myworkoutexercises = fbdata
+          } else {
+            console.log('Workout document does not exist');
+          }
+        })
+        .catch((error) => {
+          console.error('Error retrieving workout document:', error);
+        });
+        this.exerciseDialog = true
+  
+    },
+
         deleteWorkout(documentId) {
     // Assuming you have initialized Firebase Firestore and have a reference to the Firestore instance
 
@@ -276,7 +341,7 @@ import {firebase, db, storage} from '@/firebase'
   },
         fetchMyWorkouts () {
           const db = firebase.firestore()
-    const userId = firebase.auth().currentUser.uid
+      const userId = firebase.auth().currentUser.uid
       const workoutRef = db.collection('users').doc(userId)
 
 
@@ -308,6 +373,7 @@ import {firebase, db, storage} from '@/firebase'
         },
         openDialog() {
       this.dialogVisible = true;
+
     },
     closeDialog() {
       this.dialogVisible = false;
@@ -319,6 +385,10 @@ import {firebase, db, storage} from '@/firebase'
     },
     resetFields() {
       this.selectedFile = null;
+    },
+    closeMyExerciseDialog(){
+      this.exerciseDialog = false
+      this.resetFields()
     },
     saveWorkout() {
       // Handle saving the workout logic here
