@@ -53,9 +53,33 @@
   </v-carousel>
 
   </div>
+  <div class="header">
+      
+      <h1 :style="{'color':'#D29433'}">My diaries</h1>
+      </div>
+  
+  <v-card v-for="entry in diaryEntries" :key="entry.id" class="mx-auto" max-width="344">
+    <v-card-title class="naslov">
+      {{ entry.id }}
+     <v-spacer></v-spacer>
+     <v-btn
+     icon
+     >
+      <v-icon color="red" @click="deleteDiaryEntry(entry.id)">mdi-delete</v-icon>
+     </v-btn>
+    </v-card-title>
+    <v-card-subtitle>
+      {{ entry.content }}
+    </v-card-subtitle>
+  </v-card>
 
 
-  </div>
+</div>
+
+
+
+
+
   </template>
 
 <script>
@@ -66,8 +90,7 @@ import store from '@/store'
   export default {
     name: 'profile',
     components:{
-
-      
+  
     },
     props:['firstName' , 'lastName'],
     data: () => ({
@@ -77,6 +100,9 @@ import store from '@/store'
       userSurname: "",
       workoutName: "",
       myworkouts:[],
+      diaryEntries: [],
+      show: false,
+      model: 0,
     }),
     created(){
       
@@ -195,11 +221,70 @@ import store from '@/store'
   }
     }
     this.workoutName = ""
-  }
+  },
+  fetchDiaryEntries() {
+      const userId = firebase.auth().currentUser.uid
+      const diaryCollectionRef = db.collection('users').doc(userId).collection('mydiary');
+
+      // Fetch the data from the collection
+      diaryCollectionRef.get()
+        .then(querySnapshot => {
+          const entries = [];
+          querySnapshot.forEach(doc => {
+            entries.push({
+              id: doc.id,
+
+              content: doc.data().text,
+            });
+          });
+
+          // Update the diaryEntries array with the fetched data
+          this.diaryEntries = entries;
+        })
+        .catch(error => {
+          console.error('Error fetching diary entries:', error);
+        });
+    },
+    deleteDiaryEntry(documentId) {
+    // Assuming you have initialized Firebase Firestore and have a reference to the Firestore instance
+
+    // Assuming you have initialized Firebase Firestore and have a reference to the Firestore instance
+    const db = firebase.firestore()
+    const userId = firebase.auth().currentUser.uid; // Replace with the actual user ID
+    
+    // Get a reference to the 'users' collection
+    const usersCollection = db.collection('users');
+
+    // Get a reference to the specific user document within 'users' collection
+    const userDocumentRef = usersCollection.doc(userId);
+
+    // Get a reference to the 'myworkouts' subcollection within the user document
+    const myDiaryCollectionRef = userDocumentRef.collection('mydiary');
+
+    // Get a reference to the specific workout document within 'myworkouts' subcollection
+    const diaryDocumentRef = myDiaryCollectionRef.doc(documentId);
+
+    // Delete the workout document
+    diaryDocumentRef
+      .delete()
+      .then(() => {
+        console.log('Diary document deleted successfully');
+        const itemIndex = this.diaryEntries.findIndex(i => i.id === documentId);
+          if (itemIndex !== -1) {
+            this.diaryEntries.splice(itemIndex, 1);
+          }
+      })
+      .catch((error) => {
+        console.error('Error deleting workout document:', error);
+      });
+  },
   },
     mounted() {
       this.fetchUserData()
+      this.fetchDiaryEntries();
+      
     }
+
   }
 </script>
 
@@ -250,5 +335,12 @@ import store from '@/store'
   align-items: center;
 
 
+}
+
+.naslov {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
 }
 </style>
