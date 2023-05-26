@@ -2,9 +2,7 @@
   <div class="main" :style="{'background-color':'black', 'height':'100%'}">
     <div class="header" :style="{'padding-left':'15px'}">
       <v-btn color="black" :style="{'width':'30px'}">
-        <v-icon x-large color="white">
-          mdi-chevron-left
-        </v-icon>
+      
       </v-btn>
     </div>
     <div class="header">
