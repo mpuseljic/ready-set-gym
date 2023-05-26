@@ -10,13 +10,14 @@
     <div class="header">
       <h1 :style="{'color':'#D29433'}">My diary</h1>
     </div>
-    <v-row justify="center">
+    <v-container>
       <v-date-picker
         color="#D29433"
         v-model="selectedDate"
         class="mt-4"
+        style="max-height: 350px;"
         ></v-date-picker>
-    </v-row>
+    </v-container>
     <v-container class="text-center">
       <v-textarea
         v-model="content"
@@ -24,11 +25,14 @@
         color="orange orange-darken-4"
         label="Write something..."
       ></v-textarea>
+    </v-container>
+      <v-container>
       <v-btn
         rounded
         color="red"
         dark
         @click="deleteContent"
+
       >
         DELETE
       </v-btn>
@@ -37,11 +41,12 @@
         color="green"
         dark
         @click="saveContent"
+
       >
         SAVE
       </v-btn>
-
-    </v-container>
+      </v-container>
+    
 
   </div>
 </template>
