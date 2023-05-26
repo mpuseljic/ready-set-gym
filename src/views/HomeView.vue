@@ -356,6 +356,7 @@ import {firebase, db, storage} from '@/firebase'
           console.error("Error saving workouts:", error);
         });
         this.workoutName = ''
+        this.selected = []
         
     }
   }
