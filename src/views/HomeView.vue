@@ -100,7 +100,7 @@
 </v-dialog>
     </div>
     <div>
-        <v-carousel v-model="model">
+        <v-carousel v-model="model1">
     <v-carousel-item v-for="(item, index) in myworkouts" :key="index">
       <v-card class="mx-auto" max-width="344" dark>
         <v-img :src="item.imageUrl" height="200px"></v-img>
@@ -183,7 +183,7 @@ import {firebase, db, storage} from '@/firebase'
       workoutcards: [],
       exercisecards:[],
       show: false,
-      model: 0,
+      model1: 0,
       added: false,
       colors: [
         'black'
