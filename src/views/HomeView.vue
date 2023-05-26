@@ -359,6 +359,11 @@ import {firebase, db, storage} from '@/firebase'
         });
         this.addWorkoutDialog = true
         this.fetchExercises()
+        this.fetchMyWorkouts()
+        const itemIndex = this.myworkouts.findIndex(i => i.id === this.workoutName);
+          if (itemIndex !== -1) {
+            this.myworkouts.splice(itemIndex, 1);
+          }
 
     },
     fetchExercises() {
@@ -393,6 +398,7 @@ import {firebase, db, storage} from '@/firebase'
         });
         this.workoutName = ''
         this.selected = []
+        this.fetchMyWorkouts()
 
     }
   }

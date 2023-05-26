@@ -44,7 +44,7 @@
         <v-card-actions>
           
             <v-btn color="#D29433" >START WORKOUT</v-btn>
-            <v-btn color="red" >DELETE</v-btn>
+            <v-btn color="red" @click="deleteWorkout(item.id)" >DELETE</v-btn>
          
           <v-spacer></v-spacer>
         </v-card-actions>
@@ -103,6 +103,39 @@ import store from '@/store'
       
     },
     methods:{
+      deleteWorkout(documentId) {
+    // Assuming you have initialized Firebase Firestore and have a reference to the Firestore instance
+
+    // Assuming you have initialized Firebase Firestore and have a reference to the Firestore instance
+    const db = firebase.firestore()
+    const userId = firebase.auth().currentUser.uid; // Replace with the actual user ID
+    
+    // Get a reference to the 'users' collection
+    const usersCollection = db.collection('users');
+
+    // Get a reference to the specific user document within 'users' collection
+    const userDocumentRef = usersCollection.doc(userId);
+
+    // Get a reference to the 'myworkouts' subcollection within the user document
+    const myWorkoutsCollectionRef = userDocumentRef.collection('myworkouts');
+
+    // Get a reference to the specific workout document within 'myworkouts' subcollection
+    const workoutDocumentRef = myWorkoutsCollectionRef.doc(documentId);
+
+    // Delete the workout document
+    workoutDocumentRef
+      .delete()
+      .then(() => {
+        console.log('Workout document deleted successfully');
+        const itemIndex = this.myworkouts.findIndex(i => i.id === documentId);
+          if (itemIndex !== -1) {
+            this.myworkouts.splice(itemIndex, 1);
+          }
+      })
+      .catch((error) => {
+        console.error('Error deleting workout document:', error);
+      });
+  },
       logout(){
         firebase.auth().signOut().then(()=> {
           this.$router.push({name:"login"})
