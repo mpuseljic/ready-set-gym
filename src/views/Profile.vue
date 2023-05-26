@@ -60,14 +60,13 @@
 
 <script>
 
-import ProfileCard from '@/components/ProfileCard.vue';
 import {firebase, db, storage} from '@/firebase';
 import store from '@/store'
 
   export default {
     name: 'profile',
     components:{
-      ProfileCard,
+
       
     },
     props:['firstName' , 'lastName'],

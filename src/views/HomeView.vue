@@ -158,14 +158,13 @@
 
 <script>
 import router from '@/router';
-import ProfileCard from '@/components/ProfileCard.vue';
+
 import store from "@/store";
 import {firebase, db, storage} from '@/firebase'
 
 
   export default {
     components:{
-        ProfileCard,
        
       },
     data: () => ({
