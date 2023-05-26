@@ -28,7 +28,28 @@
       <h1 :style="{'color':'#D29433'}">My workouts</h1>
       </div>
       <div>
-        <ProfileCard v-for="(card, index) in cards" :key="index" :card="card"/>
+        <v-carousel v-model="model">
+    <v-carousel-item v-for="(item, index) in myworkouts" :key="index">
+      <v-card class="mx-auto" max-width="344" dark>
+        <v-img :src="item.imageUrl" height="200px"></v-img>
+
+        <v-card-title class="naslov">
+          {{ item.id }}
+        </v-card-title>
+
+        <v-card-subtitle>
+          READY SET <span class="go">GO</span>
+        </v-card-subtitle>
+
+        <v-card-actions>
+          
+            <v-btn color="#D29433" >START WORKOUT</v-btn>
+         
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-carousel-item>
+  </v-carousel>
 
   </div>
 
@@ -54,13 +75,31 @@ import store from '@/store'
       show: false,
       userName: "",
       userSurname: "",
-      workoutName: ""
+      workoutName: "",
+      myworkouts:[],
     }),
     created(){
-      this.cards = [
-      {url: require('@/assets/lowerbody.jpg'), subtitle: 'Lower Body Attack', text: 'Use these timeless leg exercises to gain mass and strength on your lower body. A varied combination of reps and sets will help to keep your routine fresh.'},
-      {url: require('@/assets/upperbody.jpg'), subtitle: 'Upper Body Attack', text: 'Build a strong upper body with these effective exercises. Focus on form and gradually increase weights to maximize results.'},
-      ]
+      
+      const db = firebase.firestore()
+      const userId = firebase.auth().currentUser.uid
+      const workoutRef = db.collection('users').doc(userId)
+
+      workoutRef.collection('myworkouts').get()
+    .then((querySnapshot) => {
+      const myworkouts = [];
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        myworkouts.push({ id: doc.id,
+        imageUrl: data.imageUrl })
+      });
+
+      this.myworkouts = myworkouts;
+    })
+    .catch((error) => {
+      console.error('Error getting exercise collection:', error);
+    });
+      
     },
     methods:{
       logout(){

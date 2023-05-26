@@ -25,7 +25,7 @@
     <div class="header">
       <h1 :style="{'color': 'white'}">RECOMMENDED WORKOUTS </h1>
     </div>
-
+<div>
     <v-carousel v-model="model">
     <v-carousel-item v-for="(item, index) in carouselItems" :key="index">
       <v-card class="mx-auto" max-width="344" dark>
@@ -48,6 +48,7 @@
       </v-card>
     </v-carousel-item>
   </v-carousel>
+</div>
 
   <div class="header">
       <h1 :style="{'color': 'white'}">MY WORKOUT PLAN</h1>
@@ -98,10 +99,35 @@
   </v-card>
 </v-dialog>
     </div>
+    <div>
+        <v-carousel v-model="model">
+    <v-carousel-item v-for="(item, index) in myworkouts" :key="index">
+      <v-card class="mx-auto" max-width="344" dark>
+        <v-img :src="item.imageUrl" height="200px"></v-img>
+
+        <v-card-title class="naslov">
+          {{ item.id }}
+        </v-card-title>
+
+        <v-card-subtitle>
+          READY SET <span class="go">GO</span>
+        </v-card-subtitle>
+
+        <v-card-actions>
+          
+            <v-btn color="#D29433" >START WORKOUT</v-btn>
+         
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-carousel-item>
+  </v-carousel>
+
+  </div>
     <div class="header">
       <h1 :style="{'color':'white'}">EXERCISE LIST</h1>
     </div>
-    <div>
+
     <div class="exerciselist" v-for="card in filteredCards" :key="card.title">
       <v-card
     class="mx-auto"
@@ -122,10 +148,8 @@
 
   </v-card>
     </div>
-  </div>
 
-   
-    
+
 </div>
 
 
@@ -166,36 +190,11 @@ import {firebase, db, storage} from '@/firebase'
       ],
       
       store: store,
+      myworkouts: []
 
     }),
     created(){
-      this.workoutcards = [
-      {url: require('@/assets/lowerbody.jpg'), subtitle: 'Lower Body Attack', text: 'Use these timeless leg exercises to gain mass and strength on your lower body. A varied combination of reps and sets will help to keep your routine fresh.', exercises: []},
-      {url: require('@/assets/upperbody.jpg'), subtitle: 'Upper Body Attack', text: 'Build a strong upper body with these effective exercises. Focus on form and gradually increase weights to maximize results.', exercises:[]},
-      ]
-      // this.exercisecards = [
-      //   {url: require('@/assets/dumbellinclinepress.gif'), title: 'DUMBBELL INCLINE PRESS'},
-      //   {url: require('@/assets/benchdips.webp'), title: 'BENCH DIPS'},
-      //   {url: require('@/assets/seateddumbbell.gif'), title: 'SEATED DUMBBELL REVERSE FLY'},
-      //   {url: require('@/assets/latpulldown.gif'), title: 'LAT PULLDOWN'},
-      //   {url: require('@/assets/bicepcurl.gif'), title: 'BICEPS CURL'},
-      //   {url: require('@/assets/lateralraise.gif'), title: 'FRONT TO LATERAL RAISE'},
-      //   {url: require('@/assets/pullups.gif'), title: 'PULL UPS'},
-      //   {url: require('@/assets/bulgarian.gif'), title: 'BULGARIAN SPLIT SQUAT'},
-      //   {url: require('@/assets/deadlift.gif'), title: 'DEADLIFT'},
-      //   {url: require('@/assets/hipthrust.gif'), title: 'HIP THRUST'},
-      //   {url: require('@/assets/stepups.gif'), title: 'WEIGHTED STEP UPS'},
-      //   {url: require('@/assets/jammerpress.gif'), title: 'BARBELL JAMMER PRESS'},
-      //   {url: require('@/assets/goodmorning.gif'), title: 'GOOD MORNING'},
-      //   {url: require('@/assets/cheststretch.webp'), title: 'CHEST STRETCH'},
-      //   {url: require('@/assets/cobra.gif'), title: 'COBRA'},
-      //   {url: require('@/assets/neckstretch.gif'), title: 'NECK STRETCH'},
-      //   {url: require('@/assets/calfstretch.gif'), title: 'CALF STRETCH'},
-      //   {url: require('@/assets/hamstringstretch.gif'), title: 'HAMSTRING STRETCH'},
-      //   {url: require('@/assets/sidelunge.gif'), title: 'SIDE LUNGE STRETCH'},
-      //   {url: require('@/assets/hipflexor.gif'), title: 'HIP FLEXOR STRETCH'},
-      //   {url: require('@/assets/butterfly.gif'), title: 'BUTTERFLY STRETCH'},
-      // ]
+      
       const db = firebase.firestore()
 
       db.collection('exercises').get()
@@ -217,8 +216,13 @@ import {firebase, db, storage} from '@/firebase'
     .catch((error) => {
       console.error('Error getting exercise collection:', error);
     });
+    
+    this.fetchMyWorkouts()
+  },
       
-    },
+    // created(){
+      
+
   
     computed: {
       filteredCards(){
@@ -233,8 +237,32 @@ import {firebase, db, storage} from '@/firebase'
       // }
   
     //  return newCards;
-      }},
+    
+      }
+    },
       methods: {
+        fetchMyWorkouts () {
+          const db = firebase.firestore()
+    const userId = firebase.auth().currentUser.uid
+      const workoutRef = db.collection('users').doc(userId)
+
+      workoutRef.collection('myworkouts').get()
+    .then((querySnapshot) => {
+      const myworkouts = [];
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        myworkouts.push({ id: doc.id,
+        imageUrl: data.imageUrl })
+      });
+
+      this.myworkouts = myworkouts;
+    })
+    .catch((error) => {
+      console.error('Error getting exercise collection:', error);
+    });
+      
+        },
         addExerciseToWorkoutCard(exercise){
           console.log("ADDING EXERCISE: ", exercise.title)
           const workoutCard = this.workoutcards.find(card => card.subtitle === exercise.workoutCard);
