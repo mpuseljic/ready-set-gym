@@ -44,6 +44,7 @@
         <v-card-actions>
           
             <v-btn color="#D29433" >START WORKOUT</v-btn>
+            <v-btn color="red" >DELETE</v-btn>
          
           <v-spacer></v-spacer>
         </v-card-actions>
