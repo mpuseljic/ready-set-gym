@@ -117,7 +117,6 @@ export default {
 
 .height {
   background-color: #d29433;
-  /* width: 150px; */
   max-width: 300px;
   padding: 20px;
   border-radius: 20px;
@@ -130,7 +129,6 @@ export default {
 
 .weight {
   background-color: #d29433;
-  /* width: 150px; */
   max-width: 300px;
   padding: 20px;
   border-radius: 20px;

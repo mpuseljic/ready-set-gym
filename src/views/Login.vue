@@ -61,27 +61,22 @@ export default {
       this.userError = false;
       this.passError = false;
       this.loading = true;
-      console.log("login..." + this.username);
 
       firebase
         .auth()
         .signInWithEmailAndPassword(this.username, this.password)
         .then((result) => {
-          console.log("Uspješna prijava", result);
         })
         .catch((error) => {
           if (error.code === "auth/user-not-found") {
-            console.error("User not found:", error.message);
             this.userError = true;
             this.loading = false;
             this.username = "";
           } else if (error.code === "auth/wrong-password") {
-            console.error("Wrong password:", error.message);
+
             this.passError = true;
             this.loading = false;
             this.password = "";
-          } else {
-            console.error("Sign-up error:", error);
           }
         });
     },
