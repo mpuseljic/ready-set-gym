@@ -1,31 +1,28 @@
 <template>
   <div :style="myStyle" id="wrapper">
-
-
     <h2 id="naslov">READYSET<span class="gym">GYM</span></h2>
-    <p id="text">
-      Become stronger with our workout plans
-    </p>
-    <v-btn id="btn" color="#D29433" width="300px" to="/signup">Get started</v-btn>
+    <p id="text">Become stronger with our workout plans</p>
+    <v-btn id="btn" color="#D29433" width="300px" to="/signup"
+      >Get started</v-btn
+    >
     <v-btn id="btn" width="300px" to="/login">Login</v-btn>
-
   </div>
 </template>
 <script>
 export default {
-  name: 'Login',
-  data(){
-    return{
-      myStyle:{
-        backgroundImage: `url(${require('@/assets/login.jpg')})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        height: '100vh',
-      }
-    }
+  name: "Login",
+  data() {
+    return {
+      myStyle: {
+        backgroundImage: `url(${require("@/assets/login.jpg")})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        height: "100vh",
+      },
+    };
   },
-}
+};
 </script>
 <style>
 #wrapper {
@@ -39,19 +36,20 @@ export default {
   margin: 8px;
 }
 
-#text{
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+#text {
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   color: white;
   padding-bottom: 5px;
   flex-direction: column;
   justify-content: end;
   align-items: center;
   font-weight: bold;
-  
 }
 
-#naslov{
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+#naslov {
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   color: white;
   padding-bottom: 10px;
   display: flex;
@@ -59,11 +57,10 @@ export default {
   justify-content: end;
   align-items: center;
   white-space: nowrap;
-
 }
 
-.gym{
-  color:#D29433;
+.gym {
+  color: #d29433;
   font-weight: bold;
   white-space: nowrap;
 }

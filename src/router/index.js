@@ -21,7 +21,7 @@ const routes = [
     meta: {
       needsUser: true
     }
-   
+
   },
   {
     path: '/bmi',
@@ -43,7 +43,7 @@ const routes = [
     path: '/diary',
     name: 'diary',
     component: Diary,
-    meta:{
+    meta: {
       needsUser: true
     }
   },
@@ -80,12 +80,12 @@ router.beforeEach((to, from, next) => {
   console.log("Stara ruta", from.name, "->nova ruta", to.name, "korisnik", store.currentUser)
 
   const noUser = store.currentUser === null;
-  if(noUser && to.meta.needsUser){
+  if (noUser && to.meta.needsUser) {
     next('login')
-  }else{
+  } else {
     next();
   }
-  
+
 })
 
 export default router

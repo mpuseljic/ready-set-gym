@@ -1,15 +1,8 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="black"
-      dark
-    >
-      <v-btn
-        href="/"
-        text
-      >
-      <v-img
+    <v-app-bar app color="black" dark>
+      <v-btn href="/" text>
+        <v-img
           alt="Vuetify Name"
           class="shrink"
           contain
@@ -20,61 +13,48 @@
     </v-app-bar>
 
     <v-main>
-      <router-view/>
+      <router-view />
     </v-main>
-    <navbar v-if="store.currentUser"/>
+    <navbar v-if="store.currentUser" />
   </v-app>
-  
 </template>
 
 <script>
-
-
-import store from '@/store'
-import Navbar from '@/components/Navbar.vue'
-import {firebase} from '@/firebase';
-import router from '@/router';
-
-
+import store from "@/store";
+import Navbar from "@/components/Navbar.vue";
+import { firebase } from "@/firebase";
+import router from "@/router";
 
 firebase.auth().onAuthStateChanged((user) => {
   const currentRoute = router.currentRoute;
 
-
-  if(user){
+  if (user) {
     console.log("User " + user.email);
     store.currentUser = user.email;
 
-    if(!currentRoute.meta.needsUser){
-      router.push({name: "home"})
+    if (!currentRoute.meta.needsUser) {
+      router.push({ name: "home" });
     }
-
-  }else{
+  } else {
     console.log("No user");
     store.currentUser = null;
 
-    if(currentRoute.meta.needsUser){
-      router.push({name: "login"})
+    if (currentRoute.meta.needsUser) {
+      router.push({ name: "login" });
     }
-    
-    
   }
-})
-
+});
 
 export default {
-  name: 'app',
+  name: "app",
 
   components: {
     Navbar,
   },
   data() {
     return {
-      store
-
-  };
-},
-
-
+      store,
+    };
+  },
 };
 </script>
