@@ -1,5 +1,5 @@
 <template>
-  <div class="main" :style="{ 'background-color': 'black', height: '100%' }">
+  <div class="main">
     <div class="header">
       <h1>My profile</h1>
       <v-btn
@@ -153,9 +153,6 @@ export default {
         });
 
         this.myworkouts = myworkouts;
-      })
-      .catch((error) => {
-        console.error("Error getting exercise collection:", error);
       });
   },
   methods: {
@@ -163,39 +160,18 @@ export default {
       this.exerciseDialog = false;
     },
     deleteWorkout(documentId) {
-      // Assuming you have initialized Firebase Firestore and have a reference to the Firestore instance
-
-      // Assuming you have initialized Firebase Firestore and have a reference to the Firestore instance
       const db = firebase.firestore();
-      const userId = firebase.auth().currentUser.uid; // Replace with the actual user ID
-
-      // Get a reference to the 'users' collection
+      const userId = firebase.auth().currentUser.uid;
       const usersCollection = db.collection("users");
-
-      // Get a reference to the specific user document within 'users' collection
       const userDocumentRef = usersCollection.doc(userId);
-
-      // Get a reference to the 'myworkouts' subcollection within the user document
       const myWorkoutsCollectionRef = userDocumentRef.collection("myworkouts");
-
-      // Get a reference to the specific workout document within 'myworkouts' subcollection
       const workoutDocumentRef = myWorkoutsCollectionRef.doc(documentId);
-
-      // Delete the workout document
-      workoutDocumentRef
-        .delete()
-        .then(() => {
-          console.log("Workout document deleted successfully");
-          const itemIndex = this.myworkouts.findIndex(
-            (i) => i.id === documentId
-          );
-          if (itemIndex !== -1) {
-            this.myworkouts.splice(itemIndex, 1);
-          }
-        })
-        .catch((error) => {
-          console.error("Error deleting workout document:", error);
-        });
+      workoutDocumentRef.delete().then(() => {
+        const itemIndex = this.myworkouts.findIndex((i) => i.id === documentId);
+        if (itemIndex !== -1) {
+          this.myworkouts.splice(itemIndex, 1);
+        }
+      });
     },
     logout() {
       firebase
@@ -210,8 +186,6 @@ export default {
 
       if (user) {
         const email = user;
-
-        // Query Firestore collection
         db.collection("users")
           .where("email", "==", email)
           .get()
@@ -220,44 +194,11 @@ export default {
               const userData = userDoc.data();
               const name = userData.ime;
               const surname = userData.prezime;
-              console.log("Name:", name);
               this.userName = name;
               this.userSurname = surname;
-              console.log("Surname:", surname);
-              // You can store or use the retrieved data as per your app's requirements
             });
-          })
-          .catch((error) => {
-            console.error("Error fetching user data:", error);
           });
       }
-    },
-    createWorkout(workoutName) {
-      workoutName = this.workoutName;
-      const currentUser = firebase.auth().currentUser;
-      if (currentUser) {
-        const userDocRef = db.collection("users").doc(currentUser.uid);
-
-        if (currentUser) {
-          // User created successfully
-          const userDocRef = db.collection("users").doc(currentUser.uid);
-          // Create "myworkouts" collection inside the user document
-          userDocRef
-            .collection("myworkouts")
-            .doc(workoutName)
-            .set({
-              vjezbe: [],
-            })
-            .then(() => {
-              console.log("myworkouts collection created successfully");
-              // Handle any additional actions after sign-up and collection creation
-            })
-            .catch((error) => {
-              console.error("Error creating myworkouts collection:", error);
-            });
-        }
-      }
-      this.workoutName = "";
     },
     fetchDiaryEntries() {
       const userId = firebase.auth().currentUser.uid;
@@ -265,64 +206,35 @@ export default {
         .collection("users")
         .doc(userId)
         .collection("mydiary");
-
-      // Fetch the data from the collection
-      diaryCollectionRef
-        .get()
-        .then((querySnapshot) => {
-          const entries = [];
-          querySnapshot.forEach((doc) => {
-            entries.push({
-              id: doc.id,
-
-              content: doc.data().text,
-            });
+      diaryCollectionRef.get().then((querySnapshot) => {
+        const entries = [];
+        querySnapshot.forEach((doc) => {
+          entries.push({
+            id: doc.id,
+            content: doc.data().text,
           });
-
-          // Update the diaryEntries array with the fetched data
-          this.diaryEntries = entries;
-        })
-        .catch((error) => {
-          console.error("Error fetching diary entries:", error);
         });
+        this.diaryEntries = entries;
+      });
     },
     deleteDiaryEntry(documentId) {
-      // Assuming you have initialized Firebase Firestore and have a reference to the Firestore instance
-
-      // Assuming you have initialized Firebase Firestore and have a reference to the Firestore instance
       const db = firebase.firestore();
-      const userId = firebase.auth().currentUser.uid; // Replace with the actual user ID
-
-      // Get a reference to the 'users' collection
+      const userId = firebase.auth().currentUser.uid;
       const usersCollection = db.collection("users");
-
-      // Get a reference to the specific user document within 'users' collection
       const userDocumentRef = usersCollection.doc(userId);
-
-      // Get a reference to the 'myworkouts' subcollection within the user document
       const myDiaryCollectionRef = userDocumentRef.collection("mydiary");
-
-      // Get a reference to the specific workout document within 'myworkouts' subcollection
       const diaryDocumentRef = myDiaryCollectionRef.doc(documentId);
 
-      // Delete the workout document
-      diaryDocumentRef
-        .delete()
-        .then(() => {
-          console.log("Diary document deleted successfully");
-          const itemIndex = this.diaryEntries.findIndex(
-            (i) => i.id === documentId
-          );
-          if (itemIndex !== -1) {
-            this.diaryEntries.splice(itemIndex, 1);
-          }
-        })
-        .catch((error) => {
-          console.error("Error deleting workout document:", error);
-        });
+      diaryDocumentRef.delete().then(() => {
+        const itemIndex = this.diaryEntries.findIndex(
+          (i) => i.id === documentId
+        );
+        if (itemIndex !== -1) {
+          this.diaryEntries.splice(itemIndex, 1);
+        }
+      });
     },
     startWorkoutDialog(documentId) {
-      // Retrieve the exercises for the selected workout from Firebase
       const userId = firebase.auth().currentUser.uid;
       const db = firebase.firestore();
       const workoutsRef = db
@@ -331,51 +243,35 @@ export default {
         .collection("myworkouts");
       const workoutDoc = workoutsRef.doc(documentId);
 
-      workoutDoc // Replace 'selectedWorkout' with the actual ID/name of the workout
-        .get()
-        .then((doc) => {
-          const fbdata = [];
-          if (doc.exists) {
-            const data = doc.data();
-            const { imageUrl, name, exercises } = data; // Destructure the attributes from the document data
-            console.log("ImageUrl:", imageUrl);
-            console.log("Name:", name);
-            console.log("Exercises:", exercises);
-            fbdata.push({
-              id: data.id,
-              name: data.name,
-              imageUrl: data.imageUrl,
-              exercises: data.exercises,
-            });
-            this.myworkoutexercises = fbdata;
-            this.exercisesinworkout = fbdata.map((item) => item.exercises);
-            const extractedArray = Array.from(this.exercisesinworkout);
-            console.log(extractedArray);
-            const nestedArray = extractedArray[0];
-            console.log(nestedArray);
-            this.fetchExerciseImages(nestedArray);
-          } else {
-            console.log("Workout document does not exist");
-          }
-        })
-        .catch((error) => {
-          console.error("Error retrieving workout document:", error);
-        });
+      workoutDoc.get().then((doc) => {
+        const fbdata = [];
+        if (doc.exists) {
+          const data = doc.data();
+          fbdata.push({
+            id: data.id,
+            name: data.name,
+            imageUrl: data.imageUrl,
+            exercises: data.exercises,
+          });
+          this.myworkoutexercises = fbdata;
+          this.exercisesinworkout = fbdata.map((item) => item.exercises);
+          const extractedArray = Array.from(this.exercisesinworkout);
+          const nestedArray = extractedArray[0];
+          this.fetchExerciseImages(nestedArray);
+        }
+      });
       this.exerciseDialog = true;
     },
     fetchExerciseImages(exerciseIds) {
       const db = firebase.firestore();
-
       const validExerciseIds = exerciseIds.filter(
         (exerciseId) => typeof exerciseId === "string"
       );
-
       const exerciseRefs = validExerciseIds.map((exerciseId) =>
         db.collection("exercises").doc(exerciseId)
       );
-
-      Promise.all(exerciseRefs.map((exerciseRef) => exerciseRef.get()))
-        .then((querySnapshots) => {
+      Promise.all(exerciseRefs.map((exerciseRef) => exerciseRef.get())).then(
+        (querySnapshots) => {
           const exercisecards = querySnapshots.map((doc) => {
             if (doc.exists) {
               const data = doc.data();
@@ -385,21 +281,15 @@ export default {
               };
               return JSON.parse(JSON.stringify(exercisecard));
             } else {
-              console.error(`Exercise with ID ${doc.id} does not exist.`);
               return null;
             }
           });
-
           const filteredExercisecards = exercisecards.filter(
             (card) => card !== null
           );
-
-          console.log("Hello", filteredExercisecards);
           this.exerciseImages = filteredExercisecards;
-        })
-        .catch((error) => {
-          console.error("Error getting exercise collection:", error);
-        });
+        }
+      );
     },
   },
   mounted() {
@@ -427,14 +317,11 @@ export default {
 }
 .name {
   color: white;
-}
-
-.show {
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
-.name {
+.show {
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
@@ -448,19 +335,14 @@ export default {
   align-items: center;
 }
 
-.calendar {
-  margin: auto;
-  width: auto;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-
 .naslov {
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 20px;
+}
+.main {
+  background-color: black;
+  height: 100%;
 }
 </style>

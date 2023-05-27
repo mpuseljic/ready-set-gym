@@ -9,13 +9,13 @@
       Create your account
     </h2>
     <div class="input-signup">
-      <h3 :style="{ color: 'white' }">First name</h3>
+      <h3 class="naziv">First name</h3>
       <input type="first-name" v-model="userName" class="input-field" />
-      <h3 :style="{ color: 'white' }">Last name</h3>
+      <h3 class="naziv">Last name</h3>
       <input type="last-name" v-model="surname" class="input-field" />
-      <h3 :style="{ color: 'white' }">E-mail</h3>
+      <h3 class="naziv">E-mail</h3>
       <input type="email" v-model="email" class="input-field" />
-      <h3 :style="{ color: 'white' }">Password</h3>
+      <h3 class="naziv">Password</h3>
       <input type="password" v-model="password" class="input-field" />
 
       <div class="submit">
@@ -83,35 +83,20 @@ export default {
           const user = userCredential.user;
 
           if (user) {
-            // User created successfully
             const userDocRef = db.collection("users").doc(user.uid);
-
-            // Add user details to the "users" collection
-            userDocRef
-              .set({
-                ime: name,
-                prezime: surname,
-                email: email,
-              })
-              .then(() => {
-                console.log("User added to collection successfully");
-              })
-
-              .catch((error) => {
-                console.error("Error adding user to collection:", error);
-              });
-          } else {
-            console.error("User object is undefined");
+            userDocRef.set({
+              ime: name,
+              prezime: surname,
+              email: email,
+            });
           }
         })
         .catch((error) => {
           if (error.code === "auth/invalid-email") {
-            console.error("Invalid email:", error.message);
             this.emailError = true;
             this.loading = false;
             this.email = "";
           } else if (error.code === "auth/weak-password") {
-            console.error("Weak password:", error.message);
             this.passError = true;
             this.loading = false;
             this.password = "";
@@ -119,8 +104,6 @@ export default {
             this.emailExists = true;
             this.loading = false;
             this.email = "";
-          } else {
-            console.error("Sign-up error:", error);
           }
         });
     },
@@ -134,6 +117,9 @@ export default {
 };
 </script>
 <style>
+.naziv {
+  color: white;
+}
 .input-signup {
   margin-top: 30px;
   display: flex;
