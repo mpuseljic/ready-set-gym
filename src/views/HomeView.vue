@@ -124,6 +124,11 @@
                 label="Workout Name"
               ></v-text-field>
             </v-form>
+            <div>
+              <span class="userError" v-if="workoutnameError"
+                >Workout name can't be blank!</span
+              >
+            </div>
           </v-card-text>
           <v-card-actions>
             <v-btn color="#D29433" @click="saveWorkout" :loading="loading"
@@ -156,7 +161,7 @@
           </v-card-text>
           <v-card-actions>
             <v-btn color="#D29433" @click="saveWorkouts">Save</v-btn>
-            <v-btn color="secondary" @click="closeDialog">Cancel</v-btn>
+            <v-btn color="secondary" @click="closeExerciseDialog">Cancel</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -249,8 +254,9 @@ import { firebase, db, storage } from "@/firebase";
 export default {
   components: {},
   data: () => ({
-    selected: [], 
-    exercises: [], 
+    workoutnameError: false,
+    selected: [],
+    exercises: [],
     addWorkoutDialog: false,
     dialogVisible: false,
     selectedFile: null,
@@ -288,14 +294,14 @@ export default {
           const data = doc.data();
           const exercisecard = {
             url: data.imageUrl,
-            title: doc.id, 
+            title: doc.id,
           };
 
           exercisecards.push(exercisecard);
         });
 
         this.exercisecards = exercisecards;
-      })
+      });
 
     this.fetchMyWorkouts();
     this.fetchRecommendedWorkouts();
@@ -317,27 +323,25 @@ export default {
         .collection("recommendedWorkout")
         .doc(documentId);
 
-      recommendedRef
-        .get()
-        .then((doc) => {
-          const fbrecommended = [];
-          if (doc.exists) {
-            const data = doc.data();
+      recommendedRef.get().then((doc) => {
+        const fbrecommended = [];
+        if (doc.exists) {
+          const data = doc.data();
 
-            fbrecommended.push({
-              imageUrl: data.imageUrl,
-              name: data.name,
-              exercises: data.exercises,
-            });
-            this.recommendedWorkouts = fbrecommended;
-            this.recommendedWorkoutExercises = fbrecommended.map(
-              (item) => item.exercises
-            );
-            const extractedArray = Array.from(this.recommendedWorkoutExercises);
-            const nestedArray = extractedArray[0];
-            this.fetchExerciseImages(nestedArray);
-          } 
-        })
+          fbrecommended.push({
+            imageUrl: data.imageUrl,
+            name: data.name,
+            exercises: data.exercises,
+          });
+          this.recommendedWorkouts = fbrecommended;
+          this.recommendedWorkoutExercises = fbrecommended.map(
+            (item) => item.exercises
+          );
+          const extractedArray = Array.from(this.recommendedWorkoutExercises);
+          const nestedArray = extractedArray[0];
+          this.fetchExerciseImages(nestedArray);
+        }
+      });
       this.startRecommendedWorkout = true;
     },
 
@@ -350,25 +354,23 @@ export default {
         .collection("myworkouts");
       const workoutDoc = workoutsRef.doc(documentId);
 
-      workoutDoc
-        .get()
-        .then((doc) => {
-          const fbdata = [];
-          if (doc.exists) {
-            const data = doc.data();
-            fbdata.push({
-              id: data.id,
-              name: data.name,
-              imageUrl: data.imageUrl,
-              exercises: data.exercises,
-            });
-            this.myworkoutexercises = fbdata;
-            this.exercisesinworkout = fbdata.map((item) => item.exercises);
-            const extractedArray = Array.from(this.exercisesinworkout);
-            const nestedArray = extractedArray[0];
-            this.fetchExerciseImages(nestedArray);
-          } 
-        })
+      workoutDoc.get().then((doc) => {
+        const fbdata = [];
+        if (doc.exists) {
+          const data = doc.data();
+          fbdata.push({
+            id: data.id,
+            name: data.name,
+            imageUrl: data.imageUrl,
+            exercises: data.exercises,
+          });
+          this.myworkoutexercises = fbdata;
+          this.exercisesinworkout = fbdata.map((item) => item.exercises);
+          const extractedArray = Array.from(this.exercisesinworkout);
+          const nestedArray = extractedArray[0];
+          this.fetchExerciseImages(nestedArray);
+        }
+      });
       this.exerciseDialog = true;
     },
 
@@ -380,16 +382,12 @@ export default {
       const myWorkoutsCollectionRef = userDocumentRef.collection("myworkouts");
       const workoutDocumentRef = myWorkoutsCollectionRef.doc(documentId);
 
-      workoutDocumentRef
-        .delete()
-        .then(() => {
-          const itemIndex = this.myworkouts.findIndex(
-            (i) => i.id === documentId
-          );
-          if (itemIndex !== -1) {
-            this.myworkouts.splice(itemIndex, 1);
-          }
-        })
+      workoutDocumentRef.delete().then(() => {
+        const itemIndex = this.myworkouts.findIndex((i) => i.id === documentId);
+        if (itemIndex !== -1) {
+          this.myworkouts.splice(itemIndex, 1);
+        }
+      });
     },
 
     fetchMyWorkouts() {
@@ -409,7 +407,7 @@ export default {
           });
 
           this.myworkouts = myworkouts;
-        })
+        });
     },
 
     addExerciseToWorkoutCard(exercise) {
@@ -433,10 +431,12 @@ export default {
     closeExerciseDialog() {
       this.addWorkoutDialog = false;
       this.resetFields();
+      this.saveWorkouts();
     },
 
     resetFields() {
       this.selectedFile = null;
+      this.workoutnameError = false;
     },
 
     closeMyExerciseDialog() {
@@ -447,44 +447,47 @@ export default {
     closeRecommendedDialog() {
       this.startRecommendedWorkout = false;
     },
-
     async saveWorkout() {
-      try {
-        this.loading = true;
-        const db = firebase.firestore();
-        const storageRef = firebase.storage().ref();
-        const currentUser = firebase.auth().currentUser;
-        const userId = currentUser.uid;
+      if (this.workoutName === "") {
+        this.workoutnameError = true;
+      } else {
+        this.workoutnameError = false;
+        try {
+          this.loading = true;
+          const db = firebase.firestore();
+          const storageRef = firebase.storage().ref();
+          const currentUser = firebase.auth().currentUser;
+          const userId = currentUser.uid;
 
-        const timestamp = new Date().getTime();
-        const fileName = `${userId}_${timestamp}`;
-        const fileRef = storageRef.child(`workoutImages/${fileName}`);
-        const snapshot = await fileRef.put(this.selectedFile);
-        const downloadURL = await snapshot.ref.getDownloadURL();
+          const timestamp = new Date().getTime();
+          const fileName = `${userId}_${timestamp}`;
+          const fileRef = storageRef.child(`workoutImages/${fileName}`);
+          const snapshot = await fileRef.put(this.selectedFile);
+          const downloadURL = await snapshot.ref.getDownloadURL();
 
-        await db
-          .collection("users")
-          .doc(userId)
-          .collection("myworkouts")
-          .doc(this.workoutName)
-          .set({
-            name: this.workoutName,
-            imageUrl: downloadURL,
-          });
-        this.closeDialog();
-      } catch (error) {
+          await db
+            .collection("users")
+            .doc(userId)
+            .collection("myworkouts")
+            .doc(this.workoutName)
+            .set({
+              name: this.workoutName,
+              imageUrl: downloadURL,
+            });
+          this.closeDialog();
+        } catch (error) {}
+
+        this.addWorkoutDialog = true;
+        this.fetchExercises();
+        this.fetchMyWorkouts();
+        const itemIndex = this.myworkouts.findIndex(
+          (i) => i.id === this.workoutName
+        );
+        if (itemIndex !== -1) {
+          this.myworkouts.splice(itemIndex, 1);
+        }
+        this.loading = false;
       }
-
-      this.addWorkoutDialog = true;
-      this.fetchExercises();
-      this.fetchMyWorkouts();
-      const itemIndex = this.myworkouts.findIndex(
-        (i) => i.id === this.workoutName
-      );
-      if (itemIndex !== -1) {
-        this.myworkouts.splice(itemIndex, 1);
-      }
-      this.loading = false;
     },
 
     fetchExercises() {
@@ -496,7 +499,7 @@ export default {
             exercises.push({ id: doc.id });
           });
           this.exercises = exercises;
-        })
+        });
     },
 
     saveWorkouts() {
@@ -508,11 +511,9 @@ export default {
         .collection("myworkouts")
         .doc(this.workoutName);
 
-      workoutsRef
-        .update({ exercises: this.selected })
-        .then(() => {
-          this.closeExerciseDialog();
-        })
+      workoutsRef.update({ exercises: this.selected }).then(() => {
+        this.closeExerciseDialog();
+      });
       this.workoutName = "";
       this.selected = [];
       this.fetchMyWorkouts();
@@ -529,8 +530,8 @@ export default {
         db.collection("exercises").doc(exerciseId)
       );
 
-      Promise.all(exerciseRefs.map((exerciseRef) => exerciseRef.get()))
-        .then((querySnapshots) => {
+      Promise.all(exerciseRefs.map((exerciseRef) => exerciseRef.get())).then(
+        (querySnapshots) => {
           const exercisecards = querySnapshots.map((doc) => {
             if (doc.exists) {
               const data = doc.data();
@@ -548,28 +549,27 @@ export default {
             (card) => card !== null
           );
           this.exerciseImages = filteredExercisecards;
-        })
+        }
+      );
     },
-    
+
     fetchRecommendedWorkouts() {
       const db = firebase.firestore();
       const recommendedRef = db.collection("recommendedWorkout");
 
-      recommendedRef
-        .get()
-        .then((querySnapshot) => {
-          const recommendedWorkouts = [];
+      recommendedRef.get().then((querySnapshot) => {
+        const recommendedWorkouts = [];
 
-          querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            recommendedWorkouts.push({
-              id: doc.id,
-              imageUrl: data.imageUrl,
-              exercises: data.exercises,
-            });
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          recommendedWorkouts.push({
+            id: doc.id,
+            imageUrl: data.imageUrl,
+            exercises: data.exercises,
           });
-          this.recommendedWorkout = recommendedWorkouts;
-        })
+        });
+        this.recommendedWorkout = recommendedWorkouts;
+      });
     },
   },
 };
