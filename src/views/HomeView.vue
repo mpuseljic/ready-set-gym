@@ -33,12 +33,15 @@
     </div>
     <div>
       <v-carousel v-model="model">
-        <v-carousel-item v-for="(item, index) in carouselItems" :key="index">
+        <v-carousel-item
+          v-for="(item, index) in recommendedWorkout"
+          :key="index"
+        >
           <v-card class="mx-auto" max-width="344" dark>
-            <v-img :src="item.url" height="200px"></v-img>
+            <v-img :src="item.imageUrl" height="200px"></v-img>
 
             <v-card-title class="naslov">
-              {{ item.title }}
+              {{ item.id }}
             </v-card-title>
 
             <v-card-subtitle>
@@ -46,7 +49,9 @@
             </v-card-subtitle>
 
             <v-card-actions>
-              <v-btn color="#D29433">START WORKOUT</v-btn>
+              <v-btn color="#D29433" @click="startRecommendedDialog(item.id)"
+                >START WORKOUT</v-btn
+              >
 
               <v-spacer></v-spacer>
             </v-card-actions>
@@ -54,6 +59,39 @@
         </v-carousel-item>
       </v-carousel>
     </div>
+    <v-dialog v-model="startRecommendedWorkout" max-width="500px">
+      <v-card color="grey">
+        <v-card-title></v-card-title>
+        <v-card-text>
+          <v-container fluid>
+            <v-card
+              v-for="(item, index) in recommendedWorkouts"
+              :key="index"
+              dark
+            >
+              <v-img :src="item.imageUrl" height="200px"></v-img>
+              <v-card-title class="justify-center">{{
+                item.name
+              }}</v-card-title>
+              <v-card-subtitle class="text-center">
+                READY SET <span class="go">GO</span>
+              </v-card-subtitle>
+              <v-card v-for="(item, index) in exerciseImages" :key="index">
+                <v-card-title class="justify-center">
+                  <v-img :src="item.imageUrl" height="200px"></v-img
+                ></v-card-title>
+                <v-card-subtitle class="text-center"
+                  >{{ item.naziv }}
+                </v-card-subtitle>
+              </v-card>
+            </v-card>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="secondary" @click="closeRecommendedDialog">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <div class="header">
       <h1 :style="{ color: 'white' }">MY WORKOUT PLAN</h1>
@@ -219,11 +257,6 @@ export default {
     selectedFile: null,
     workoutName: "",
     model: 0,
-    carouselItems: [
-      { url: require("@/assets/lowerbody.jpg"), title: "Lower Body Attack" },
-      { url: require("@/assets/upperbody.jpg"), title: "Upper Body Attack" },
-      { url: require("@/assets/crossfit.jpg"), title: "CrossFit" },
-    ],
     workoutcards: [],
     exercisecards: [],
     show: false,
@@ -238,6 +271,10 @@ export default {
     loading: false,
     exercisesinworkout: [],
     exerciseImages: [],
+    startRecommendedWorkout: false,
+    recommendedWorkouts: [],
+    recommendedWorkout: [],
+    recommendedWorkoutExercises: [],
   }),
   created() {
     const db = firebase.firestore();
@@ -264,6 +301,7 @@ export default {
       });
 
     this.fetchMyWorkouts();
+    this.fetchRecommendedWorkouts();
   },
 
   // created(){
@@ -286,6 +324,44 @@ export default {
     },
   },
   methods: {
+    startRecommendedDialog(documentId) {
+      const db = firebase.firestore();
+      const recommendedRef = db
+        .collection("recommendedWorkout")
+        .doc(documentId);
+      recommendedRef
+        .get()
+        .then((doc) => {
+          const fbrecommended = [];
+          if (doc.exists) {
+            const data = doc.data();
+            const { imageUrl, name, exercises } = data;
+            console.log("ImageUrl:", imageUrl);
+            console.log("Name:", name);
+            console.log("Exercises:", exercises);
+            fbrecommended.push({
+              imageUrl: data.imageUrl,
+              name: data.name,
+              exercises: data.exercises,
+            });
+            this.recommendedWorkouts = fbrecommended;
+            this.recommendedWorkoutExercises = fbrecommended.map(
+              (item) => item.exercises
+            );
+            const extractedArray = Array.from(this.recommendedWorkoutExercises);
+            console.log(extractedArray);
+            const nestedArray = extractedArray[0];
+            console.log(nestedArray);
+            this.fetchExerciseImages(nestedArray);
+          } else {
+            console.log("Workout document does not exist");
+          }
+        })
+        .catch((error) => {
+          console.error("Error retrieving workout document:", error);
+        });
+      this.startRecommendedWorkout = true;
+    },
     startWorkoutDialog(documentId) {
       // Retrieve the exercises for the selected workout from Firebase
       const userId = firebase.auth().currentUser.uid;
@@ -415,6 +491,9 @@ export default {
       this.exerciseDialog = false;
       this.resetFields();
     },
+    closeRecommendedDialog() {
+      this.startRecommendedWorkout = false;
+    },
 
     async saveWorkout() {
       try {
@@ -540,6 +619,29 @@ export default {
         })
         .catch((error) => {
           console.error("Error getting exercise collection:", error);
+        });
+    },
+    fetchRecommendedWorkouts() {
+      const db = firebase.firestore();
+      const recommendedRef = db.collection("recommendedWorkout");
+
+      recommendedRef
+        .get()
+        .then((querySnapshot) => {
+          const recommendedWorkouts = [];
+
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            recommendedWorkouts.push({
+              id: doc.id,
+              imageUrl: data.imageUrl,
+              exercises: data.exercises,
+            });
+          });
+          this.recommendedWorkout = recommendedWorkouts;
+        })
+        .catch((error) => {
+          console.error("Error getting recommended collection:", error);
         });
     },
   },
