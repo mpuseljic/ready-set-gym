@@ -192,7 +192,7 @@
     </div>
 
     <div class="exerciselist" v-for="card in filteredCards" :key="card.title">
-      <v-card class="mx-auto" max-width="344" dark>
+      <v-card class="mx-auto" max-width="344" dark style="margin-bottom: 20px">
         <v-img :src="card.url" :alt="card.title" height="200px"></v-img>
 
         <v-card-title class="naslov-vjezbe">
@@ -415,51 +415,7 @@ export default {
       this.exerciseDialog = false;
       this.resetFields();
     },
-    // saveWorkout() {
-    //   // Handle saving the workout logic here
-    //   const db = firebase.firestore();
-    //   const storageRef = firebase.storage().ref();
-    //   const currentUser = firebase.auth().currentUser;
-    //   const userId = currentUser.uid; // Replace with the actual user ID
 
-    //   // Generate a unique file name using a timestamp
-    //   const timestamp = new Date().getTime();
-    //   const fileName = `${userId}_${timestamp}`;
-
-    //   // Create a reference to the storage location
-    //   const fileRef = storageRef.child(`workoutImages/${fileName}`);
-
-    //   // Upload the file to storage
-    //   fileRef.put(this.selectedFile)
-    //     .then(snapshot => {
-    //       // Get the download URL of the uploaded file
-    //       return snapshot.ref.getDownloadURL();
-    //     })
-    //     .then(downloadURL => {
-    //       // Add the workout to the "myworkouts" collection under the user's document
-    //       return db.collection('users').doc(userId).collection('myworkouts').doc(
-    //         this.workoutName,
-    //       ).set({
-    //         name: this.workoutName,
-    //         imageUrl: downloadURL
-    //       })
-    //     })
-    //     .then(() => {
-    //       console.log('Workout saved successfully');
-    //       this.closeDialog();
-    //     })
-    //     .catch(error => {
-    //       console.error('Error saving workout:', error);
-    //     });
-    //     this.addWorkoutDialog = true
-    //     this.fetchExercises()
-    //     this.fetchMyWorkouts()
-    //     const itemIndex = this.myworkouts.findIndex(i => i.id === this.workoutName);
-    //       if (itemIndex !== -1) {
-    //         this.myworkouts.splice(itemIndex, 1);
-    //       }
-
-    // },
     async saveWorkout() {
       try {
         this.loading = true;

@@ -33,14 +33,58 @@
             </v-card-subtitle>
 
             <v-card-actions>
-              <v-btn color="#D29433">START WORKOUT</v-btn>
-              <v-btn color="red" @click="deleteWorkout(item.id)">DELETE</v-btn>
+              <v-btn color="#D29433" @click="startWorkoutDialog(item.id)"
+                >START WORKOUT</v-btn
+              >
+              <v-btn
+                color="red"
+                @click="deleteWorkout(item.id)"
+                icon
+                style="margin-left: 150px"
+              >
+                <v-icon>mdi-delete</v-icon></v-btn
+              >
 
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
         </v-carousel-item>
       </v-carousel>
+      <v-dialog v-model="exerciseDialog" max-width="500px">
+        <v-card color="grey">
+          <v-card-title></v-card-title>
+          <v-card-text>
+            <v-container fluid>
+              <v-card
+                v-for="(item, index) in myworkoutexercises"
+                :key="index"
+                dark
+              >
+                <v-img :src="item.imageUrl" height="200px"></v-img>
+                <v-card-title class="justify-center">{{
+                  item.name
+                }}</v-card-title>
+                <v-card-subtitle class="text-center">
+                  READY SET <span class="go">GO</span>
+                </v-card-subtitle>
+                <v-card v-for="(item, index) in exerciseImages" :key="index">
+                  <v-card-title class="justify-center">
+                    <v-img :src="item.imageUrl" height="200px"></v-img
+                  ></v-card-title>
+                  <v-card-subtitle class="text-center"
+                    >{{ item.naziv }}
+                  </v-card-subtitle>
+                </v-card>
+              </v-card>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn color="secondary" @click="closeMyExerciseDialog"
+              >Close</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
     <div class="header">
       <h1 :style="{ color: '#D29433' }">My diaries</h1>
@@ -51,6 +95,7 @@
       :key="entry.id"
       class="mx-auto"
       max-width="344"
+      style="margin-bottom: 20px"
     >
       <v-card-title class="naslov">
         {{ entry.id }}
@@ -86,6 +131,10 @@ export default {
     diaryEntries: [],
     show: false,
     model: 0,
+    exerciseDialog: false,
+    myworkoutexercises: [],
+    exercisesinworkout: [],
+    exerciseImages: [],
   }),
   created() {
     const db = firebase.firestore();
@@ -110,6 +159,9 @@ export default {
       });
   },
   methods: {
+    closeMyExerciseDialog() {
+      this.exerciseDialog = false;
+    },
     deleteWorkout(documentId) {
       // Assuming you have initialized Firebase Firestore and have a reference to the Firestore instance
 
@@ -267,6 +319,86 @@ export default {
         })
         .catch((error) => {
           console.error("Error deleting workout document:", error);
+        });
+    },
+    startWorkoutDialog(documentId) {
+      // Retrieve the exercises for the selected workout from Firebase
+      const userId = firebase.auth().currentUser.uid;
+      const db = firebase.firestore();
+      const workoutsRef = db
+        .collection("users")
+        .doc(userId)
+        .collection("myworkouts");
+      const workoutDoc = workoutsRef.doc(documentId);
+
+      workoutDoc // Replace 'selectedWorkout' with the actual ID/name of the workout
+        .get()
+        .then((doc) => {
+          const fbdata = [];
+          if (doc.exists) {
+            const data = doc.data();
+            const { imageUrl, name, exercises } = data; // Destructure the attributes from the document data
+            console.log("ImageUrl:", imageUrl);
+            console.log("Name:", name);
+            console.log("Exercises:", exercises);
+            fbdata.push({
+              id: data.id,
+              name: data.name,
+              imageUrl: data.imageUrl,
+              exercises: data.exercises,
+            });
+            this.myworkoutexercises = fbdata;
+            this.exercisesinworkout = fbdata.map((item) => item.exercises);
+            const extractedArray = Array.from(this.exercisesinworkout);
+            console.log(extractedArray);
+            const nestedArray = extractedArray[0];
+            console.log(nestedArray);
+            this.fetchExerciseImages(nestedArray);
+          } else {
+            console.log("Workout document does not exist");
+          }
+        })
+        .catch((error) => {
+          console.error("Error retrieving workout document:", error);
+        });
+      this.exerciseDialog = true;
+    },
+    fetchExerciseImages(exerciseIds) {
+      const db = firebase.firestore();
+
+      const validExerciseIds = exerciseIds.filter(
+        (exerciseId) => typeof exerciseId === "string"
+      );
+
+      const exerciseRefs = validExerciseIds.map((exerciseId) =>
+        db.collection("exercises").doc(exerciseId)
+      );
+
+      Promise.all(exerciseRefs.map((exerciseRef) => exerciseRef.get()))
+        .then((querySnapshots) => {
+          const exercisecards = querySnapshots.map((doc) => {
+            if (doc.exists) {
+              const data = doc.data();
+              const exercisecard = {
+                imageUrl: data.imageUrl,
+                naziv: doc.id,
+              };
+              return JSON.parse(JSON.stringify(exercisecard));
+            } else {
+              console.error(`Exercise with ID ${doc.id} does not exist.`);
+              return null;
+            }
+          });
+
+          const filteredExercisecards = exercisecards.filter(
+            (card) => card !== null
+          );
+
+          console.log("Hello", filteredExercisecards);
+          this.exerciseImages = filteredExercisecards;
+        })
+        .catch((error) => {
+          console.error("Error getting exercise collection:", error);
         });
     },
   },
