@@ -23,8 +23,12 @@
       ></v-textarea>
     </v-container>
     <v-container>
-      <v-btn rounded color="red" dark @click="deleteContent"> DELETE </v-btn>
-      <v-btn rounded color="green" dark @click="saveContent"> SAVE </v-btn>
+      <v-btn class="gumb" rounded color="red" dark @click="deleteContent">
+        DELETE
+      </v-btn>
+      <v-btn class="gumb" rounded color="green" dark @click="saveContent">
+        SAVE
+      </v-btn>
     </v-container>
   </div>
 </template>
@@ -74,3 +78,8 @@ export default {
   },
 };
 </script>
+<style>
+.gumb {
+  margin: 0 10px 0 10px;
+}
+</style>
