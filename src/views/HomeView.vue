@@ -444,6 +444,9 @@ export default {
       this.exerciseDialog = false;
       this.resetFields();
     },
+    closeRecommendedDialog() {
+      this.startRecommendedWorkout = false;
+    },
 
 
     async saveWorkout() {
