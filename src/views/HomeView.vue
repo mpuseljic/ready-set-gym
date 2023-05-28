@@ -317,33 +317,7 @@ export default {
   },
 
   methods: {
-    startRecommendedDialog(documentId) {
-      const db = firebase.firestore();
-      const recommendedRef = db
-        .collection("recommendedWorkout")
-        .doc(documentId);
 
-      recommendedRef.get().then((doc) => {
-        const fbrecommended = [];
-        if (doc.exists) {
-          const data = doc.data();
-
-          fbrecommended.push({
-            imageUrl: data.imageUrl,
-            name: data.name,
-            exercises: data.exercises,
-          });
-          this.recommendedWorkouts = fbrecommended;
-          this.recommendedWorkoutExercises = fbrecommended.map(
-            (item) => item.exercises
-          );
-          const extractedArray = Array.from(this.recommendedWorkoutExercises);
-          const nestedArray = extractedArray[0];
-          this.fetchExerciseImages(nestedArray);
-        }
-      });
-      this.startRecommendedWorkout = true;
-    },
 
     startWorkoutDialog(documentId) {
       const userId = firebase.auth().currentUser.uid;
