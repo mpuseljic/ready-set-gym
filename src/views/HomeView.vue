@@ -32,66 +32,7 @@
       <h1 :style="{ color: 'white' }">RECOMMENDED WORKOUTS</h1>
     </div>
     <div>
-      <v-carousel v-model="model">
-        <v-carousel-item
-          v-for="(item, index) in recommendedWorkout"
-          :key="index"
-        >
-          <v-card class="mx-auto" max-width="344" dark>
-            <v-img :src="item.imageUrl" height="200px"></v-img>
-
-            <v-card-title class="naslov">
-              {{ item.id }}
-            </v-card-title>
-
-            <v-card-subtitle>
-              READY SET <span class="go">GO</span>
-            </v-card-subtitle>
-
-            <v-card-actions>
-              <v-btn color="#D29433" @click="startRecommendedDialog(item.id)"
-                >START WORKOUT</v-btn
-              >
-
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-carousel-item>
-      </v-carousel>
-    </div>
-    <v-dialog v-model="startRecommendedWorkout" max-width="500px">
-      <v-card color="grey">
-        <v-card-title></v-card-title>
-        <v-card-text>
-          <v-container fluid>
-            <v-card
-              v-for="(item, index) in recommendedWorkouts"
-              :key="index"
-              dark
-            >
-              <v-img :src="item.imageUrl" height="200px"></v-img>
-              <v-card-title class="justify-center">{{
-                item.name
-              }}</v-card-title>
-              <v-card-subtitle class="text-center">
-                READY SET <span class="go">GO</span>
-              </v-card-subtitle>
-              <v-card v-for="(item, index) in exerciseImages" :key="index">
-                <v-card-title class="justify-center">
-                  <v-img :src="item.imageUrl" height="200px"></v-img
-                ></v-card-title>
-                <v-card-subtitle class="text-center"
-                  >{{ item.naziv }}
-                </v-card-subtitle>
-              </v-card>
-            </v-card>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="secondary" @click="closeRecommendedDialog">Close</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    
 
     <div class="header">
       <h1 :style="{ color: 'white' }">MY WORKOUT PLAN</h1>
