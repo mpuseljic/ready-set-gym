@@ -308,13 +308,7 @@ export default {
   },
 
   computed: {
-    filteredCards() {
-      let searchTerm = this.store.searchTerm;
-      return this.exercisecards.filter((card) =>
-        card.title.includes(searchTerm)
-      );
-    },
-  },
+
 
   methods: {
     startRecommendedDialog(documentId) {
