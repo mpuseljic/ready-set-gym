@@ -276,6 +276,10 @@ export default {
     loading: false,
     exercisesinworkout: [],
     exerciseImages: [],
+    startRecommendedWorkout: false,
+    recommendedWorkouts: [],
+    recommendedWorkout: [],
+    recommendedWorkoutExercises: [],
 
   }),
 
