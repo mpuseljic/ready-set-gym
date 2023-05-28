@@ -25,25 +25,7 @@ import Navbar from "@/components/Navbar.vue";
 import { firebase } from "@/firebase";
 import router from "@/router";
 
-firebase.auth().onAuthStateChanged((user) => {
-  const currentRoute = router.currentRoute;
 
-  if (user) {
-    console.log("User " + user.email);
-    store.currentUser = user.email;
-
-    if (!currentRoute.meta.needsUser) {
-      router.push({ name: "home" });
-    }
-  } else {
-    console.log("No user");
-    store.currentUser = null;
-
-    if (currentRoute.meta.needsUser) {
-      router.push({ name: "login" });
-    }
-  }
-});
 
 export default {
   name: "app",
