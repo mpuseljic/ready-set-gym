@@ -555,24 +555,7 @@ export default {
       );
     },
 
-    fetchRecommendedWorkouts() {
-      const db = firebase.firestore();
-      const recommendedRef = db.collection("recommendedWorkout");
 
-      recommendedRef.get().then((querySnapshot) => {
-        const recommendedWorkouts = [];
-
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          recommendedWorkouts.push({
-            id: doc.id,
-            imageUrl: data.imageUrl,
-            exercises: data.exercises,
-          });
-        });
-        this.recommendedWorkout = recommendedWorkouts;
-      });
-    },
   },
 };
 </script>
