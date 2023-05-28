@@ -445,9 +445,7 @@ export default {
       this.resetFields();
     },
 
-    closeRecommendedDialog() {
-      this.startRecommendedWorkout = false;
-    },
+
     async saveWorkout() {
       if (this.workoutName === "") {
         this.workoutnameError = true;
