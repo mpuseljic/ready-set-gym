@@ -173,6 +173,14 @@ export default {
         }
       });
     },
+    logout() {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.$router.push({ name: "login" });
+        });
+    },
 
     fetchUserData() {
       const user = store.currentUser;
