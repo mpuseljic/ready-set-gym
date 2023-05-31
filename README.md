@@ -1,19 +1,24 @@
-# ready-set-gym
+# ReadySetGym - dokumentacija projekta
 
-## Project setup
-```
-yarn install
-```
+## Tim 
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+- Profesor: doc. dr. sc. Nikola Tanković
+- Studenti:
+  - Luka Benković
+  - Mirna Pušeljić
 
-### Compiles and minifies for production
+## Studijski smjer 
 ```
-yarn build
+Studijski smjer: Informatika
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Kolegij
+```
+Kolegij: Programsko inženjerstvo
+Akademska godina: 2022./2023.
+```
+
+## Linkovi
+Link na video: 
+Link na dokumentaciju: 
+Link na prezentaciju:
