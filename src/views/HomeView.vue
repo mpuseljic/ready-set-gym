@@ -166,8 +166,8 @@
         </v-card>
       </v-dialog>
     </div>
-    <div>
-      <v-carousel v-model="model1">
+    <div >
+      <v-carousel v-model="model1" v-if="myworkouts.length > 0">
         <v-carousel-item v-for="(item, index) in myworkouts" :key="index">
           <v-card class="mx-auto" max-width="344" dark>
             <v-img :src="item.imageUrl" height="200px"></v-img>
@@ -280,7 +280,7 @@ export default {
     recommendedWorkouts: [],
     recommendedWorkout: [],
     recommendedWorkoutExercises: [],
-    docid: "",
+    docid: ""
   }),
 
   created() {

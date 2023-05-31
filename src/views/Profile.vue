@@ -19,7 +19,7 @@
       <h1 :style="{ color: '#D29433' }">My workouts</h1>
     </div>
     <div>
-      <v-carousel v-model="model">
+      <v-carousel v-model="model" v-if="myworkouts.length > 0">
         <v-carousel-item v-for="(item, index) in myworkouts" :key="index">
           <v-card class="mx-auto" max-width="344" dark>
             <v-img :src="item.imageUrl" height="200px"></v-img>
