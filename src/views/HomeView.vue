@@ -92,7 +92,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    
 
     <div class="header">
       <h1 :style="{ color: 'white' }">MY WORKOUT PLAN</h1>
@@ -174,7 +173,7 @@
             <v-img :src="item.imageUrl" height="200px"></v-img>
 
             <v-card-title class="naslov">
-              {{ item.id }}
+              {{ item.name }}
             </v-card-title>
 
             <v-card-text> READY SET <span class="go">GO</span> </v-card-text>
@@ -281,7 +280,7 @@ export default {
     recommendedWorkouts: [],
     recommendedWorkout: [],
     recommendedWorkoutExercises: [],
-
+    docid: "",
   }),
 
   created() {
@@ -317,7 +316,6 @@ export default {
       );
     },
   },
-
 
   methods: {
     startRecommendedDialog(documentId) {
@@ -406,7 +404,11 @@ export default {
 
           querySnapshot.forEach((doc) => {
             const data = doc.data();
-            myworkouts.push({ id: doc.id, imageUrl: data.imageUrl });
+            myworkouts.push({
+              id: doc.id,
+              name: data.name,
+              imageUrl: data.imageUrl,
+            });
           });
 
           this.myworkouts = myworkouts;
@@ -434,7 +436,6 @@ export default {
     closeExerciseDialog() {
       this.addWorkoutDialog = false;
       this.resetFields();
-      this.saveWorkouts();
     },
 
     resetFields() {
@@ -449,7 +450,6 @@ export default {
     closeRecommendedDialog() {
       this.startRecommendedWorkout = false;
     },
-
 
     async saveWorkout() {
       if (this.workoutName === "") {
@@ -469,15 +469,15 @@ export default {
           const snapshot = await fileRef.put(this.selectedFile);
           const downloadURL = await snapshot.ref.getDownloadURL();
 
-          await db
+          let doc = await db
             .collection("users")
             .doc(userId)
             .collection("myworkouts")
-            .doc(this.workoutName)
-            .set({
+            .add({
               name: this.workoutName,
               imageUrl: downloadURL,
             });
+          this.docid = doc.id;
           this.closeDialog();
         } catch (error) {}
 
@@ -507,18 +507,19 @@ export default {
     },
 
     saveWorkouts() {
+      let docId = this.docid;
       const db = firebase.firestore();
       const userId = firebase.auth().currentUser.uid;
       const workoutsRef = db
         .collection("users")
         .doc(userId)
         .collection("myworkouts")
-        .doc(this.workoutName);
-
+        .doc(docId);
       workoutsRef.update({ exercises: this.selected }).then(() => {
         this.closeExerciseDialog();
       });
       this.workoutName = "";
+      this.docid = "";
       this.selected = [];
       this.fetchMyWorkouts();
     },
@@ -574,7 +575,6 @@ export default {
         this.recommendedWorkout = recommendedWorkouts;
       });
     },
-
   },
 };
 </script>

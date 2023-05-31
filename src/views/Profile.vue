@@ -25,7 +25,7 @@
             <v-img :src="item.imageUrl" height="200px"></v-img>
 
             <v-card-title class="naslov">
-              {{ item.id }}
+              {{ item.name }}
             </v-card-title>
 
             <v-card-subtitle>
@@ -149,7 +149,11 @@ export default {
 
         querySnapshot.forEach((doc) => {
           const data = doc.data();
-          myworkouts.push({ id: doc.id, imageUrl: data.imageUrl });
+          myworkouts.push({
+            id: doc.id,
+            name: data.name,
+            imageUrl: data.imageUrl,
+          });
         });
 
         this.myworkouts = myworkouts;
