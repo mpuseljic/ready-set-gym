@@ -19,6 +19,6 @@ Akademska godina: 2022./2023.
 ```
 
 ## Linkovi
-Link na video: 
-Link na dokumentaciju: 
-Link na prezentaciju:
+- Link na video: 
+- Link na dokumentaciju: 
+- Link na prezentaciju:
