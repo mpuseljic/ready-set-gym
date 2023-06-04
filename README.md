@@ -22,6 +22,7 @@ Akademska godina: 2022./2023.
 - Link na video: 
 - Link na dokumentaciju: 
 - Link na prezentaciju:
+- Javni URL aplikacije: https://readysetgym.netlify.app/
 
 ## Opis projekta
 - Aplikacija ReadySetGym pruža sveobuhvatno rješenje za vježbanje i kondiciju, koje je prilagođeno potrebama i ciljevima korisnika. Korištenjem ove aplikacije, korisnici će imati koristi od gotovih planova, personalizacije, kako bi postigli željene rezultate i održali zdrav način života.
