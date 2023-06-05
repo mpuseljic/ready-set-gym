@@ -65,15 +65,12 @@ export default {
       firebase
         .auth()
         .signInWithEmailAndPassword(this.username, this.password)
-        .then((result) => {
-        })
         .catch((error) => {
           if (error.code === "auth/user-not-found") {
             this.userError = true;
             this.loading = false;
             this.username = "";
           } else if (error.code === "auth/wrong-password") {
-
             this.passError = true;
             this.loading = false;
             this.password = "";
