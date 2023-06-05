@@ -158,15 +158,17 @@
                 </v-col>
               </v-row>
             </v-container>
+            <span class="userError" v-if="noExercises"
+              >You need to add atleast one exercise to your plan!</span
+            >
           </v-card-text>
           <v-card-actions>
             <v-btn color="#D29433" @click="saveWorkouts">Save</v-btn>
-            <v-btn color="secondary" @click="closeExerciseDialog">Cancel</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
     </div>
-    <div >
+    <div>
       <v-carousel v-model="model1" v-if="myworkouts.length > 0">
         <v-carousel-item v-for="(item, index) in myworkouts" :key="index">
           <v-card class="mx-auto" max-width="344" dark>
@@ -257,6 +259,7 @@ export default {
     workoutnameError: false,
     selected: [],
     exercises: [],
+    noExercises: false,
     addWorkoutDialog: false,
     dialogVisible: false,
     selectedFile: null,
@@ -280,7 +283,7 @@ export default {
     recommendedWorkouts: [],
     recommendedWorkout: [],
     recommendedWorkoutExercises: [],
-    docid: ""
+    docid: "",
   }),
 
   created() {
@@ -507,21 +510,26 @@ export default {
     },
 
     saveWorkouts() {
-      let docId = this.docid;
-      const db = firebase.firestore();
-      const userId = firebase.auth().currentUser.uid;
-      const workoutsRef = db
-        .collection("users")
-        .doc(userId)
-        .collection("myworkouts")
-        .doc(docId);
-      workoutsRef.update({ exercises: this.selected }).then(() => {
-        this.closeExerciseDialog();
-      });
-      this.workoutName = "";
-      this.docid = "";
-      this.selected = [];
-      this.fetchMyWorkouts();
+      if (this.selected.length === 0) {
+        this.noExercises = true;
+      } else {
+        this.noExercises = false;
+        let docId = this.docid;
+        const db = firebase.firestore();
+        const userId = firebase.auth().currentUser.uid;
+        const workoutsRef = db
+          .collection("users")
+          .doc(userId)
+          .collection("myworkouts")
+          .doc(docId);
+        workoutsRef.update({ exercises: this.selected }).then(() => {
+          this.closeExerciseDialog();
+        });
+        this.workoutName = "";
+        this.docid = "";
+        this.selected = [];
+        this.fetchMyWorkouts();
+      }
     },
 
     fetchExerciseImages(exerciseIds) {
