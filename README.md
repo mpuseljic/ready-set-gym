@@ -19,10 +19,10 @@ Akademska godina: 2022./2023.
 ```
 
 ## Linkovi
-- Link na video: 
+- Link na video: https://youtu.be/y2CN8KoRQb8
 - Link na dokumentaciju: [Dokumentacija ready-set-gym.pdf](https://github.com/mpuseljic/ready-set-gym/files/11660210/Dokumentacija.ready-set-gym.pdf)
 
-- Link na prezentaciju:[ReadySetGym - prezentacija.pptx](https://github.com/mpuseljic/ready-set-gym/files/11709899/Predlozak.za.prezentaciju.projekta.pptx)
+- Link na prezentaciju: [ReadySetGym - prezentacija.pptx](https://github.com/mpuseljic/ready-set-gym/files/11709899/Predlozak.za.prezentaciju.projekta.pptx)
 
 - Javni URL aplikacije: https://readysetgym.netlify.app/
 
